@@ -1,0 +1,27 @@
+name: $DB_DATABASE
+
+services:
+  postgres:
+    image: postgis/postgis:16-3.4-alpine
+    environment:
+      POSTGRES_USER: $DB_USERNAME
+      POSTGRES_PASSWORD: $DB_PASSWORD
+      POSTGRES_DB: $DB_DATABASE
+      LANG: de_DE.utf8
+      TZ: Europe/Vienna
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  adminer:
+    image: adminer
+    depends_on:
+      - postgres
+    environment:
+      ADMINER_DESIGN: flat
+    ports:
+      - 8090:8080
+
+volumes:
+  postgres-data:

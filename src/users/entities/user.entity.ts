@@ -12,7 +12,7 @@ export class User extends BaseEntity {
   firstname: string;
 
   @Column('text')
-  lastname: string;
+  lastname?: string | null;
 
   @Column('text')
   email: string;
@@ -23,7 +23,7 @@ export class User extends BaseEntity {
   password: string;
 
   @Column('boolean')
-  initial_registration: boolean;
+  initial_registration: boolean | true;
 
   @Column(() => Address)
   address: Address;
