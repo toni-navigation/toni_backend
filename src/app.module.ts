@@ -6,6 +6,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { postgresConnectionOptions } from '@/ormconfig';
 import { environmentVariablesSchema } from '@/types/EnvironmentVariables';
 import { UsersModule } from '@/users/users.module';
+import { AuthenticationModule } from '@/authentication/authentication.module';
 
 @Module({
   imports: [
@@ -24,6 +25,8 @@ import { UsersModule } from '@/users/users.module';
         new DataSource(options).initialize(),
     }),
     UsersModule,
+    AuthenticationModule
+
   ],
   controllers: [],
   providers: [],
