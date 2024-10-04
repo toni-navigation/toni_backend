@@ -1,9 +1,9 @@
 import { BeforeInsert, BeforeUpdate, Column, Entity, Index } from 'typeorm';
 import { BaseEntity } from '@/base-entities/base-entity.entity';
-import { Address } from '@/base-entities/address-entity.entity';
 import { ApiHideProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import * as argon2 from '@node-rs/argon2';
+import { Address } from '@/base-entities/address-entity.entity';
 
 @Entity({ name: 'app_user' })
 export class User extends BaseEntity {
@@ -22,11 +22,11 @@ export class User extends BaseEntity {
   @Column('text')
   password: string;
 
-  @Column('boolean')
-  initial_registration: boolean | true;
+  // @Column('boolean')
+  // initial_registration: boolean | true;
 
-  @Column(() => Address)
-  address: Address;
+  // @Column(() => Address)
+  // address: Address;
 
   @BeforeInsert()
   @BeforeUpdate()
