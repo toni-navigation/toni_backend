@@ -1,6 +1,6 @@
 import { Column, Index } from 'typeorm';
-import { IsNotEmpty, IsNumberString, IsString } from 'class-validator';
-import { PointDto } from '@/authentication/dto/point.dto';
+import { IsNotEmpty, IsNumber, IsNumberString, IsString } from 'class-validator';
+import { PointDto } from '@/users/dto/point.dto';
 
 export class Address {
   @IsString()
@@ -19,7 +19,7 @@ export class Address {
   @IsNotEmpty()
   city: string;
 
-  // Use a string to store the geography data in WKT (Well-Known Text) format
+  // // Use a string to store the geography data in WKT (Well-Known Text) format
   // @Column({ type: 'geography', spatialFeatureType: 'Point', srid: 4326 }) // SRID 4326 for WGS84
   // geolocation: number[]; // or use number[] for coordinates
 

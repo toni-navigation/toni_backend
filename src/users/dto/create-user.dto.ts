@@ -6,6 +6,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Address } from '@/base-entities/address-entity.entity';
+import { Type } from 'class-transformer';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -15,7 +16,6 @@ export class CreateUserDto {
   @IsString()
   lastname: string;
 
-  @IsNotEmpty()
   @IsEmail()
   email: string;
 
@@ -24,6 +24,7 @@ export class CreateUserDto {
   @MinLength(8)
   password: string;
 
-  @ValidateNested()
-  address: Address;
+  // @ValidateNested()
+  // @Type(() => Address)
+  // address: Address;
 }
