@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsEmail,
   IsNotEmpty,
   IsString,
@@ -23,6 +24,9 @@ export class CreateUserDto {
   @IsString()
   @MinLength(8)
   password: string;
+
+  @IsBoolean()
+  initial_registration: true;
 
   @ValidateNested()
   address: Address;
