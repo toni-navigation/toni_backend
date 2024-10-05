@@ -15,6 +15,7 @@ import { ValidationModule } from '@/validation/validation.module';
     ConfigModule.forRoot({
       validate: environmentVariablesSchema.parse,
     }),
+
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
         ...postgresConnectionOptions,
@@ -25,9 +26,12 @@ import { ValidationModule } from '@/validation/validation.module';
 
       dataSourceFactory: async (options: DataSourceOptions) => new DataSource(options).initialize(),
     }),
+
     ValidationModule,
     SerializationModule,
+
     UsersModule,
+
     AuthenticationModule,
   ],
   controllers: [],
