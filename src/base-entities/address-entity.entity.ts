@@ -1,5 +1,6 @@
-import { Column, Index } from 'typeorm';
 import { IsNotEmpty, IsNumber, IsNumberString, IsString } from 'class-validator';
+import { Column, Index } from 'typeorm';
+
 import { PointDto } from '@/users/dto/point.dto';
 
 export class Address {
@@ -29,5 +30,4 @@ export class Address {
     srid: 4326,
   })
   geometry: PointDto;
-
 }

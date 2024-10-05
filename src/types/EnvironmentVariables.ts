@@ -9,21 +9,15 @@ export const environmentVariablesSchema = z.object({
 
   TYPEORM_ENTITIES: z.string(),
   TYPEORM_MIGRATIONS: z.string(),
-  TYPEORM_MIGRATIONS_RUN: z
-    .enum(['true', 'false'])
-    .transform((value) => value === 'true'),
-  TYPEORM_SYNCHRONIZE: z
-    .enum(['true', 'false'])
-    .transform((value) => value === 'true'),
+  TYPEORM_MIGRATIONS_RUN: z.enum(['true', 'false']).transform((value) => value === 'true'),
+  TYPEORM_SYNCHRONIZE: z.enum(['true', 'false']).transform((value) => value === 'true'),
 
   CORS_ORIGIN: z.string(),
 
   JWT_SECRET: z.string(),
   JWT_EXPIRATION_TIME: z.string().regex(/^\d+$/).transform(Number),
   JWT_COOKIE_NAME: z.string(),
-  JWT_COOKIE_SECURE: z
-    .enum(['true', 'false'])
-    .transform((value) => value === 'true'),
+  JWT_COOKIE_SECURE: z.enum(['true', 'false']).transform((value) => value === 'true'),
 });
 
 export type EnvironmentVariables = z.infer<typeof environmentVariablesSchema>;
