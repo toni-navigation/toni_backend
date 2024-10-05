@@ -3,10 +3,12 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
+import { AuthenticationModule } from '@/authentication/authentication.module';
 import { postgresConnectionOptions } from '@/ormconfig';
+import { SerializationModule } from '@/serialization/serialization.module';
 import { environmentVariablesSchema } from '@/types/EnvironmentVariables';
 import { UsersModule } from '@/users/users.module';
-import { AuthenticationModule } from '@/authentication/authentication.module';
+import { ValidationModule } from '@/validation/validation.module';
 
 @Module({
   imports: [
@@ -21,13 +23,12 @@ import { AuthenticationModule } from '@/authentication/authentication.module';
         autoLoadEntities: true,
       }),
 
-      dataSourceFactory: async (options: DataSourceOptions) =>
-        new DataSource(options).initialize(),
+      dataSourceFactory: async (options: DataSourceOptions) => new DataSource(options).initialize(),
     }),
+    ValidationModule,
+    SerializationModule,
     UsersModule,
     AuthenticationModule,
-
-
   ],
   controllers: [],
   providers: [],
