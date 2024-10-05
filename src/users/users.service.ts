@@ -15,11 +15,11 @@ export class UsersService {
   }
 
   findAll() {
-    return `This action returns all users`;
+    return this.usersRepository.find();
   }
 
   findOne(id: string) {
-    return `This action returns a #${id} user`;
+    return this.usersRepository.findOneByOrFail({ id });
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {

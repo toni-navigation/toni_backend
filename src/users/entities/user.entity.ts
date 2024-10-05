@@ -8,12 +8,12 @@ import { BaseEntity } from '@/base-entities/base-entity.entity';
 
 @Entity({ name: 'app_user' })
 export class User extends BaseEntity {
-  // @Index({ unique: true })
-  // @Column('text')
-  // firstname: string;
-  //
-  // @Column('text')
-  // lastname?: string | null;
+  @Index({ unique: true })
+  @Column('text')
+  firstname: string;
+
+  @Column('text')
+  lastname?: string | null;
 
   @Index({ unique: true })
   @Column('text')
@@ -26,9 +26,8 @@ export class User extends BaseEntity {
 
   // @Column('boolean')
   // initial_registration: boolean | true;
-
-  // @Column(() => Address)
-  // address: Address;
+  @Column(() => Address)
+  address: Address;
 
   @BeforeInsert()
   @BeforeUpdate()
