@@ -3,8 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
-import { FavoritesModule } from './favorites/favorites.module';
 import { AuthenticationModule } from '@/authentication/authentication.module';
+import { FavoritesModule } from '@/favorites/favorites.module';
 import { postgresConnectionOptions } from '@/ormconfig';
 import { SerializationModule } from '@/serialization/serialization.module';
 import { environmentVariablesSchema } from '@/types/EnvironmentVariables';
