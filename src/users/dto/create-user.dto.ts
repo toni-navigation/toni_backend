@@ -1,4 +1,3 @@
-import { Type } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsString, MinLength, ValidateNested } from 'class-validator';
 
 import { Address } from '@/base-entities/address-entity.entity';

@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
+import { FavoritesModule } from './favorites/favorites.module';
 import { AuthenticationModule } from '@/authentication/authentication.module';
 import { postgresConnectionOptions } from '@/ormconfig';
 import { SerializationModule } from '@/serialization/serialization.module';
@@ -33,6 +34,8 @@ import { ValidationModule } from '@/validation/validation.module';
     UsersModule,
 
     AuthenticationModule,
+
+    FavoritesModule,
   ],
   controllers: [],
   providers: [],

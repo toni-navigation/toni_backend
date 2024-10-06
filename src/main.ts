@@ -15,7 +15,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
-    .setTitle('NestJS Auth Example')
+    .setTitle('Toni API')
     .addCookieAuth(configService.get('JWT_COOKIE_NAME', { infer: true }))
     .build();
   const document = SwaggerModule.createDocument(app, config);
