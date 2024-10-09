@@ -26,8 +26,8 @@ export class User extends BaseEntity {
 
   // @Column('boolean')
   // initial_registration: boolean | true;
-  @Column(() => Address)
-  address: Address;
+  // @Column(() => Address)
+  // address: Address;
 
   @BeforeInsert()
   @BeforeUpdate()

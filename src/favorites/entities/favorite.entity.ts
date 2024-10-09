@@ -1,7 +1,8 @@
+import { ValidateNested } from 'class-validator';
 import { Column, Entity, Index } from 'typeorm';
 
 import { BaseEntity } from '@/base-entities/base-entity.entity';
-import { PointDto } from '@/users/dto/point.dto';
+import { PhotonFeature } from '@/favorites/dto/photon-feature.dto';
 
 @Entity({ name: 'app_favorite' })
 export class Favorite extends BaseEntity {
@@ -9,6 +10,9 @@ export class Favorite extends BaseEntity {
   @Column('text')
   name: string;
 
-  @Column(() => PointDto)
-  geometry: PointDto;
+  @Column('boolean')
+  isHome: boolean;
+
+  @Column('jsonb')
+  photonFeature: PhotonFeature;
 }

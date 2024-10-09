@@ -1,12 +1,17 @@
-import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsBoolean, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 
-import { PointDto } from '@/users/dto/point.dto';
+import { PhotonFeature } from '@/favorites/dto/photon-feature.dto';
 
 export class CreateFavoriteDto {
   @IsNotEmpty()
   @IsString()
   name: string;
 
+  @IsBoolean()
+  isHome: boolean;
+
   @ValidateNested()
-  geometry: PointDto;
+  @Type(() => PhotonFeature)
+  photonFeature: PhotonFeature;
 }

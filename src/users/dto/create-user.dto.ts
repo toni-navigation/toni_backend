@@ -1,6 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength, ValidateNested } from 'class-validator';
-
-import { Address } from '@/base-entities/address-entity.entity';
+import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -16,7 +14,4 @@ export class CreateUserDto {
   @IsString()
   @MinLength(8)
   password: string;
-
-  @ValidateNested()
-  address: Address;
 }
