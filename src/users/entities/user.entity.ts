@@ -3,7 +3,6 @@ import * as argon2 from '@node-rs/argon2';
 import { Exclude } from 'class-transformer';
 import { BeforeInsert, BeforeUpdate, Column, Entity, Index } from 'typeorm';
 
-import { Address } from '@/base-entities/address-entity.entity';
 import { BaseEntity } from '@/base-entities/base-entity.entity';
 
 @Entity({ name: 'app_user' })

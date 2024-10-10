@@ -1,4 +1,3 @@
-import { ValidateNested } from 'class-validator';
 import { Column, Entity, Index } from 'typeorm';
 
 import { BaseEntity } from '@/base-entities/base-entity.entity';

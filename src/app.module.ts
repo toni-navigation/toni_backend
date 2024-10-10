@@ -7,6 +7,7 @@ import { AuthenticationModule } from '@/authentication/authentication.module';
 import { FavoritesModule } from '@/favorites/favorites.module';
 import { postgresConnectionOptions } from '@/ormconfig';
 import { SerializationModule } from '@/serialization/serialization.module';
+import { SettingsModule } from '@/settings/settings.module';
 import { environmentVariablesSchema } from '@/types/EnvironmentVariables';
 import { UsersModule } from '@/users/users.module';
 import { ValidationModule } from '@/validation/validation.module';
@@ -36,6 +37,8 @@ import { ValidationModule } from '@/validation/validation.module';
     AuthenticationModule,
 
     FavoritesModule,
+
+    SettingsModule,
   ],
   controllers: [],
   providers: [],
