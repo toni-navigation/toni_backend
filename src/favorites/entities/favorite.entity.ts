@@ -1,4 +1,4 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { BaseEntity } from '@/base-entities/base-entity.entity';
 import { PhotonFeature } from '@/favorites/dto/photon-feature.dto';
@@ -10,7 +10,7 @@ export class Favorite extends BaseEntity {
   @Column('text')
   name: string;
 
-  @Column('boolean')
+  @Column('boolean', { default: false })
   isHome: boolean;
 
   @Column('jsonb')

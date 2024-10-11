@@ -28,7 +28,7 @@ export class User extends BaseEntity {
   @Column('double precision', { nullable: true, default: null })
   calibrationFactor: number | null;
 
-  @OneToMany(() => Favorite, (favorite) => favorite.user)
+  @OneToMany((type) => Favorite, (favorite) => favorite.user)
   favorites: Favorite[];
 
   @BeforeInsert()
