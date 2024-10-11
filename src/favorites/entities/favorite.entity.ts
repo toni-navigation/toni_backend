@@ -1,7 +1,8 @@
-import { Column, Entity, Index } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
 import { BaseEntity } from '@/base-entities/base-entity.entity';
 import { PhotonFeature } from '@/favorites/dto/photon-feature.dto';
+import { User } from '@/users/entities/user.entity';
 
 @Entity({ name: 'app_favorite' })
 export class Favorite extends BaseEntity {
@@ -14,4 +15,7 @@ export class Favorite extends BaseEntity {
 
   @Column('jsonb')
   photonFeature: PhotonFeature;
+
+  @ManyToOne(() => User, (user) => user.favorites)
+  user: User;
 }

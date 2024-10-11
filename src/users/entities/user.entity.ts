@@ -1,9 +1,11 @@
 import { ApiHideProperty } from '@nestjs/swagger';
 import * as argon2 from '@node-rs/argon2';
 import { Exclude } from 'class-transformer';
-import { BeforeInsert, BeforeUpdate, Column, Entity, Index } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, Index, OneToMany } from 'typeorm';
+import { nullable } from 'zod';
 
 import { BaseEntity } from '@/base-entities/base-entity.entity';
+import { Favorite } from '@/favorites/entities/favorite.entity';
 
 @Entity({ name: 'app_user' })
 export class User extends BaseEntity {
@@ -23,10 +25,11 @@ export class User extends BaseEntity {
   @Column('text')
   password: string;
 
-  // @Column('boolean')
-  // initial_registration: boolean | true;
-  // @Column(() => Address)
-  // address: Address;
+  @Column('double precision', { nullable: true, default: null })
+  calibrationFactor: number | null;
+
+  @OneToMany(() => Favorite, (favorite) => favorite.user)
+  favorites: Favorite[];
 
   @BeforeInsert()
   @BeforeUpdate()

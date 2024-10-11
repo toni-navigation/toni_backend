@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { CreateFavoriteDto } from '@/favorites/dto/create-favorite.dto';
 import { UpdateFavoriteDto } from '@/favorites/dto/update-favorite.dto';
 import { FavoritesService } from '@/favorites/favorites.service';
+import { RequestWithUser } from '@/types/RequestWithUser';
 
 @ApiTags('Favorites')
 @Controller('favorites')
@@ -11,8 +12,8 @@ export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 
   @Post()
-  create(@Body() createFavoriteDto: CreateFavoriteDto) {
-    return this.favoritesService.create(createFavoriteDto);
+  create(@Body() createFavoriteDto: CreateFavoriteDto, @Req() req: RequestWithUser) {
+    return this.favoritesService.create(createFavoriteDto, req.user);
   }
 
   @Get()
