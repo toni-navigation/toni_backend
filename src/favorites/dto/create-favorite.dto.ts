@@ -1,17 +1,18 @@
 import { Type } from 'class-transformer';
-import { IsBoolean, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 
-import { PhotonFeature } from '@/favorites/dto/photon-feature.dto';
+import { PhotonFeatureDto } from '@/favorites/dto/photon-feature.dto';
+import { FavoriteType } from '@/favorites/enums/favorite-type.enum';
 
 export class CreateFavoriteDto {
   @IsNotEmpty()
   @IsString()
   name: string;
 
-  @IsBoolean()
-  isHome: boolean;
+  @IsEnum(FavoriteType)
+  type: FavoriteType;
 
   @ValidateNested()
-  @Type(() => PhotonFeature)
-  photonFeature: PhotonFeature;
+  @Type(() => PhotonFeatureDto)
+  photonFeature: PhotonFeatureDto;
 }

@@ -1,18 +1,21 @@
 import { Type } from 'class-transformer';
-import { IsString, ValidateNested } from 'class-validator';
+import { IsNotEmpty, IsObject, ValidateNested } from 'class-validator';
 
-import { Properties } from '@/favorites/dto/properties.dto';
 import { PointDto } from '@/users/dto/point.dto';
 
-export class PhotonFeature {
-  @IsString()
-  type: string;
+export class PhotonFeatureDto {
+  @IsNotEmpty()
+  type: 'Feature';
 
+  @IsObject()
   @ValidateNested()
   @Type(() => PointDto)
   geometry: PointDto;
 
-  @ValidateNested()
-  @Type(() => Properties)
-  properties: Properties;
+  @IsObject()
+  @IsNotEmpty()
+  readonly properties: {
+    name: string;
+    [key: string]: any;
+  };
 }
