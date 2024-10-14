@@ -15,7 +15,6 @@ export class FavoritesService {
   ) {}
 
   async create(createFavoriteDto: CreateFavoriteDto, user: User): Promise<Favorite> {
-    // const user = await this.usersRepository.findOne(user);
     if (!user) {
       throw new NotFoundException(`User not found`);
     }

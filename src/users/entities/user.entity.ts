@@ -2,7 +2,6 @@ import { ApiHideProperty } from '@nestjs/swagger';
 import * as argon2 from '@node-rs/argon2';
 import { Exclude } from 'class-transformer';
 import { BeforeInsert, BeforeUpdate, Column, Entity, Index, OneToMany } from 'typeorm';
-import { nullable } from 'zod';
 
 import { BaseEntity } from '@/base-entities/base-entity.entity';
 import { Favorite } from '@/favorites/entities/favorite.entity';
@@ -28,7 +27,7 @@ export class User extends BaseEntity {
   @Column('double precision', { nullable: true, default: null })
   calibrationFactor: number | null;
 
-  @OneToMany((type) => Favorite, (favorite) => favorite.user)
+  @OneToMany(() => Favorite, (favorite) => favorite.user)
   favorites: Favorite[];
 
   @BeforeInsert()
