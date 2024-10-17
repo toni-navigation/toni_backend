@@ -24,8 +24,8 @@ export class FavoritesService {
     return this.favoritesRepository.save(favorite);
   }
 
-  findAll() {
-    return this.favoritesRepository.find();
+  findAll(id: string) {
+    return this.favoritesRepository.find({ where: { user: { id } } });
   }
 
   findOne(id: string) {

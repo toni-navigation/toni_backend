@@ -19,6 +19,9 @@ export class User extends BaseEntity {
   @Column('text')
   email: string;
 
+  @Column('boolean', { default: false })
+  isAdmin: boolean;
+
   @ApiHideProperty()
   @Exclude()
   @Column('text')

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { CreateFavoriteDto } from '@/favorites/dto/create-favorite.dto';
@@ -17,8 +17,8 @@ export class FavoritesController {
   }
 
   @Get()
-  findAll() {
-    return this.favoritesService.findAll();
+  findAll(@Req() req: RequestWithUser) {
+    return this.favoritesService.findAll(req.user.id);
   }
 
   @Get(':favoriteId')

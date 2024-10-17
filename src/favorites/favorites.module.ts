@@ -7,7 +7,7 @@ import { FavoritesService } from '@/favorites/favorites.service';
 import { User } from '@/users/entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Favorite]), TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([Favorite, User])],
   controllers: [FavoritesController],
   providers: [FavoritesService],
 })
