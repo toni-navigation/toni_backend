@@ -1,9 +1,8 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Action, CaslAbilityFactory } from '@/casl/casl-ability.factory/casl-ability.factory';
-import { AbilityModule } from '@/casl/casl.module';
 import { CreateFavoriteDto } from '@/favorites/dto/create-favorite.dto';
 import { UpdateFavoriteDto } from '@/favorites/dto/update-favorite.dto';
 import { Favorite } from '@/favorites/entities/favorite.entity';
@@ -12,48 +11,61 @@ import { User } from '@/users/entities/user.entity';
 @Injectable()
 export class FavoritesService {
   constructor(
-    @InjectRepository(Favorite) private readonly favoritesRepository: Repository<Favorite>,
-    @InjectRepository(User) private readonly usersRepository: Repository<User>,
+    @InjectRepository(Favorite) private favoritesRepository: Repository<Favorite>,
+    @InjectRepository(User) private usersRepository: Repository<User>,
     private abilityFactory: CaslAbilityFactory,
   ) {}
 
-  async create(createFavoriteDto: CreateFavoriteDto, user: User): Promise<Favorite> {
-    if (!user) {
-      throw new NotFoundException(`User not found`);
-    }
+  async createFavorite(createFavoriteDto: CreateFavoriteDto, currentUser: User): Promise<Favorite> {
+    const ability = this.abilityFactory.defineAbility(currentUser);
 
-    const favorite = this.favoritesRepository.create({ ...createFavoriteDto, user });
+    if (!ability.can(Action.Create, Favorite)) {
+      throw new ForbiddenException('You are not allowed to create a favorite.');
+    }
+    const favorite = this.favoritesRepository.create({ ...createFavoriteDto, userId: currentUser.id });
 
     return this.favoritesRepository.save(favorite);
   }
 
-  async findAll(user: User) {
-    const { id } = user;
+  async findAllFavorites(currentUser: User) {
+    const ability = this.abilityFactory.defineAbility(currentUser);
 
-    return this.favoritesRepository.find({ where: { user: { id } } });
+    if (!ability.can(Action.Read, Favorite)) {
+      throw new ForbiddenException('You are not allowed to read favorites.');
+    }
+
+    return this.favoritesRepository.findBy({ userId: currentUser.id });
   }
 
-  async findOne(favoriteId: string, user: User) {
-    // const user = await this.usersRepository.findOneByOrFail({ id: userId });
+  async findFavoriteById(favoriteId: string, currentUser: User) {
+    const favorite = await this.favoritesRepository.findOneByOrFail({ id: favoriteId });
 
-    return this.favoritesRepository.findOneByOrFail({ id: favoriteId });
+    const ability = this.abilityFactory.defineAbility(currentUser);
+    if (!ability.can(Action.Read, favorite)) {
+      throw new ForbiddenException('You are not allowed to read this favorite.');
+    }
+
+    return favorite;
   }
 
-  async update(id: string, updateFavoriteDto: UpdateFavoriteDto, user: User) {
-    const favorite = await this.favoritesRepository.findOneByOrFail({ id });
-    // const ability = this.abilityFactory.defineAbility(user);
-    //
-    // const isAllowed = ability.can(Action.Update, favorite);
-    // console.log(isAllowed, 'isAllowed');
-    // if (!isAllowed) {
-    //   throw new ForbiddenException('You are not allowed to update a favorite');
-    // }
+  async updateFavorite(favoriteId: string, updateFavoriteDto: UpdateFavoriteDto, currentUser: User) {
+    const favorite = await this.favoritesRepository.findOneByOrFail({ id: favoriteId });
+    const ability = this.abilityFactory.defineAbility(currentUser);
+    if (!ability.can(Action.Update, favorite)) {
+      throw new ForbiddenException('You are not allowed to update this favorite.');
+    }
 
     return this.favoritesRepository.save(Object.assign(favorite, updateFavoriteDto));
   }
 
-  async remove(favoriteId: string, user: User) {
+  async deleteFavorite(favoriteId: string, currentUser: User) {
     const favorite = await this.favoritesRepository.findOneByOrFail({ id: favoriteId });
+
+    const ability = this.abilityFactory.defineAbility(currentUser);
+
+    if (!ability.can(Action.Delete, favorite)) {
+      throw new ForbiddenException('You are not allowed to delete this favorite.');
+    }
 
     return this.favoritesRepository.remove(favorite);
   }

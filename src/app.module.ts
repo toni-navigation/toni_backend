@@ -1,12 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
-import { PoliciesGuard } from '@/ability/policies.guard';
 import { AuthenticationModule } from '@/authentication/authentication.module';
-import { CaslAbilityFactory } from '@/casl/casl-ability.factory/casl-ability.factory';
 import { AbilityModule } from '@/casl/casl.module';
 import { FavoritesModule } from '@/favorites/favorites.module';
 import { postgresConnectionOptions } from '@/ormconfig';

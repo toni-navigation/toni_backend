@@ -1,4 +1,4 @@
-import { Ability, AbilityBuilder, AbilityClass, ExtractSubjectType, InferSubjects, PureAbility } from '@casl/ability';
+import { Ability, AbilityBuilder, AbilityClass, ExtractSubjectType, InferSubjects } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
 
 import { Favorite } from '@/favorites/entities/favorite.entity';
@@ -18,11 +18,14 @@ export type AppAbility = Ability<[Action, Subjects]>;
 @Injectable()
 export class CaslAbilityFactory {
   defineAbility(user: User) {
-    const { can, cannot, build } = new AbilityBuilder<Ability<[Action, Subjects]>>(Ability as AbilityClass<AppAbility>);
+    const { can, build } = new AbilityBuilder<Ability<[Action, Subjects]>>(Ability as AbilityClass<AppAbility>);
 
     if (user.role === UserRole.ADMIN) {
       can(Action.Manage, 'all'); // read-write access to everything
     } else {
+      // Regular users can only manage their own Favorites
+      can(Action.Manage, Favorite, { userId: user.id });
+
       // Regular users can read their own profiles
       can(Action.Read, User, { id: user.id });
       // Regular users can update their own profile
