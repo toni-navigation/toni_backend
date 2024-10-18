@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { AbilityModule } from '@/casl/casl.module';
 import { Favorite } from '@/favorites/entities/favorite.entity';
 import { FavoritesController } from '@/favorites/favorites.controller';
 import { FavoritesService } from '@/favorites/favorites.service';
 import { User } from '@/users/entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Favorite, User])],
+  imports: [TypeOrmModule.forFeature([Favorite, User]), AbilityModule],
   controllers: [FavoritesController],
   providers: [FavoritesService],
 })

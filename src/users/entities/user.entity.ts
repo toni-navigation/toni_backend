@@ -6,6 +6,10 @@ import { BeforeInsert, BeforeUpdate, Column, Entity, Index, OneToMany } from 'ty
 import { BaseEntity } from '@/base-entities/base-entity.entity';
 import { Favorite } from '@/favorites/entities/favorite.entity';
 
+export enum UserRole {
+  ADMIN = 'admin',
+  USER = 'user',
+}
 @Entity({ name: 'app_user' })
 export class User extends BaseEntity {
   @Index({ unique: true })
@@ -19,8 +23,12 @@ export class User extends BaseEntity {
   @Column('text')
   email: string;
 
-  @Column('boolean', { default: false })
-  isAdmin: boolean;
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.USER,
+  })
+  role: UserRole;
 
   @ApiHideProperty()
   @Exclude()
