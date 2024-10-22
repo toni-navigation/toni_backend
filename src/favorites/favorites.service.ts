@@ -6,6 +6,7 @@ import { Action, CaslAbilityFactory } from '@/casl/casl-ability.factory/casl-abi
 import { CreateFavoriteDto } from '@/favorites/dto/create-favorite.dto';
 import { UpdateFavoriteDto } from '@/favorites/dto/update-favorite.dto';
 import { Favorite } from '@/favorites/entities/favorite.entity';
+import { convertPhotonFeatureDtoToEntity } from '@/functions/functions';
 import { PhotonFeature } from '@/photon-features/entities/photon-feature.entity';
 import { User } from '@/users/entities/user.entity';
 
@@ -25,20 +26,10 @@ export class FavoritesService {
       throw new ForbiddenException('You are not allowed to create a favorite.');
     }
 
-    const { type, properties, geometry } = createFavoriteDto.photonFeature;
-    const suffixedProperties = Object.fromEntries(
-      Object.entries(properties).map(([key, value]) => [`property_${key}`, value]),
+    const photonFeatureEntity = this.photonFeatureRepository.create(
+      convertPhotonFeatureDtoToEntity(createFavoriteDto.photonFeature),
     );
-    const [geometryCoordinatesX, geometryCoordinatesY] = geometry.coordinates;
-    console.log(suffixedProperties);
-    const photonFeature = this.photonFeatureRepository.create({
-      photon_feature_type: type,
-      geometry_coordinates_x: geometryCoordinatesX,
-      geometry_coordinates_y: geometryCoordinatesY,
-      geometry_type: geometry.type,
-      ...suffixedProperties,
-    });
-    const savedPhotonFeature = await this.photonFeatureRepository.save(photonFeature);
+    const savedPhotonFeature = await this.photonFeatureRepository.save(photonFeatureEntity);
     const favorite = this.favoritesRepository.create({
       name: createFavoriteDto.name,
       type: createFavoriteDto.type,
