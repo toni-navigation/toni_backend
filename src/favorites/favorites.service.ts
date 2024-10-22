@@ -6,6 +6,7 @@ import { Action, CaslAbilityFactory } from '@/casl/casl-ability.factory/casl-abi
 import { CreateFavoriteDto } from '@/favorites/dto/create-favorite.dto';
 import { UpdateFavoriteDto } from '@/favorites/dto/update-favorite.dto';
 import { Favorite } from '@/favorites/entities/favorite.entity';
+import { PhotonFeature } from '@/photon-features/entities/photon-feature.entity';
 import { User } from '@/users/entities/user.entity';
 
 @Injectable()
@@ -13,16 +14,36 @@ export class FavoritesService {
   constructor(
     @InjectRepository(Favorite) private favoritesRepository: Repository<Favorite>,
     @InjectRepository(User) private usersRepository: Repository<User>,
+    @InjectRepository(PhotonFeature) private photonFeatureRepository: Repository<PhotonFeature>,
     private abilityFactory: CaslAbilityFactory,
   ) {}
 
-  async createFavorite(createFavoriteDto: CreateFavoriteDto, currentUser: User): Promise<Favorite> {
+  async createFavorite(createFavoriteDto: CreateFavoriteDto, currentUser: User) {
     const ability = this.abilityFactory.defineAbility(currentUser);
 
     if (!ability.can(Action.Create, Favorite)) {
       throw new ForbiddenException('You are not allowed to create a favorite.');
     }
-    const favorite = this.favoritesRepository.create({ ...createFavoriteDto, userId: currentUser.id });
+
+    const favorite = this.favoritesRepository.create({
+      ...createFavoriteDto,
+      userId: currentUser.id,
+    });
+
+    const photonFeatureData = createFavoriteDto.photonFeature;
+    const { type: geometryType, coordinates } = photonFeatureData.geometry;
+    const [geometryCoordinatesX, geometryCoordinatesY] = coordinates; // Array destructuring
+
+    const photonFeature = this.photonFeatureRepository.create({
+      type: 'Feature',
+      geometryType,
+      geometryCoordinatesX,
+      geometryCoordinatesY,
+      propertyName: photonFeatureData.properties.name,
+      ...photonFeatureData.properties,
+    });
+
+    favorite.photonFeature = await this.photonFeatureRepository.save(photonFeature);
 
     return this.favoritesRepository.save(favorite);
   }

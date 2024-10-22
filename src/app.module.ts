@@ -7,6 +7,7 @@ import { AuthenticationModule } from '@/authentication/authentication.module';
 import { AbilityModule } from '@/casl/casl.module';
 import { FavoritesModule } from '@/favorites/favorites.module';
 import { postgresConnectionOptions } from '@/ormconfig';
+import { PhotonFeaturesModule } from '@/photon-features/photon-features.module';
 import { SerializationModule } from '@/serialization/serialization.module';
 import { environmentVariablesSchema } from '@/types/EnvironmentVariables';
 import { UsersModule } from '@/users/users.module';
@@ -39,6 +40,8 @@ import { ValidationModule } from '@/validation/validation.module';
     FavoritesModule,
 
     AbilityModule,
+
+    PhotonFeaturesModule,
   ],
   controllers: [],
   providers: [],
