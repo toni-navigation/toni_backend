@@ -25,25 +25,26 @@ export class FavoritesService {
       throw new ForbiddenException('You are not allowed to create a favorite.');
     }
 
-    const favorite = this.favoritesRepository.create({
-      ...createFavoriteDto,
-      userId: currentUser.id,
-    });
-
-    const photonFeatureData = createFavoriteDto.photonFeature;
-    const { type: geometryType, coordinates } = photonFeatureData.geometry;
-    const [geometryCoordinatesX, geometryCoordinatesY] = coordinates; // Array destructuring
-
+    const { type, properties, geometry } = createFavoriteDto.photonFeature;
+    const suffixedProperties = Object.fromEntries(
+      Object.entries(properties).map(([key, value]) => [`property_${key}`, value]),
+    );
+    const [geometryCoordinatesX, geometryCoordinatesY] = geometry.coordinates;
+    console.log(suffixedProperties);
     const photonFeature = this.photonFeatureRepository.create({
-      type: 'Feature',
-      geometryType,
-      geometryCoordinatesX,
-      geometryCoordinatesY,
-      propertyName: photonFeatureData.properties.name,
-      ...photonFeatureData.properties,
+      photon_feature_type: type,
+      geometry_coordinates_x: geometryCoordinatesX,
+      geometry_coordinates_y: geometryCoordinatesY,
+      geometry_type: geometry.type,
+      ...suffixedProperties,
     });
-
-    favorite.photonFeature = await this.photonFeatureRepository.save(photonFeature);
+    const savedPhotonFeature = await this.photonFeatureRepository.save(photonFeature);
+    const favorite = this.favoritesRepository.create({
+      name: createFavoriteDto.name,
+      type: createFavoriteDto.type,
+      userId: currentUser.id,
+      photonFeatureId: savedPhotonFeature.id,
+    });
 
     return this.favoritesRepository.save(favorite);
   }

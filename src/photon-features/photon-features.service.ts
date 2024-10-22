@@ -13,19 +13,45 @@ export class PhotonFeaturesService {
   ) {}
 
   async createPhotonFeature(photonFeatureDto: CreatePhotonFeatureDto) {
-    const photonFeature = this.photonFeatureRepository.create(photonFeatureDto);
+    const {
+      geometry: photonFeatureGeometry,
+      properties: photonFeatureProperties,
+      type: photonFeatureType,
+    } = photonFeatureDto;
+    const suffixedProperties = Object.fromEntries(
+      Object.entries(photonFeatureProperties).map(([key, value]) => [`property_${key}`, value]),
+    );
+    const [geometryCoordinatesX, geometryCoordinatesY] = photonFeatureGeometry.coordinates; // Array destructuring
+    const photonFeature = this.photonFeatureRepository.create({
+      photon_feature_type: photonFeatureType,
+      geometry_coordinates_x: geometryCoordinatesX,
+      geometry_coordinates_y: geometryCoordinatesY,
+      geometry_type: photonFeatureGeometry.type,
+      ...suffixedProperties,
+    });
 
-    return this.photonFeatureRepository.save(photonFeature);
+    return this.photonFeatureRepository.save(this.photonFeatureRepository.create(photonFeature));
   }
 
   async findOnePhotonFeature(photonFeatureId: string) {
-    return this.photonFeatureRepository.findOne({ where: { id: photonFeatureId } });
+    const dbFeature = await this.photonFeatureRepository.findOneOrFail({ where: { id: photonFeatureId } });
+
+    // return {
+    //   type: dbFeature.photonFeatureType,
+    //   geometry: {
+    //     type: dbFeature.geometryType,
+    //     coordinates: [dbFeature.geometryCoordinatesX, dbFeature.geometryCoordinatesY],
+    //   },
+    //   properties: {
+    //     ...dbFeature,
+    //   },
+    // };
   }
 
   async updatePhotonFeature(photonFeatureId: string, photonFeatureDto: CreatePhotonFeatureDto) {
-    await this.photonFeatureRepository.update(photonFeatureId, photonFeatureDto);
-
-    return this.findOnePhotonFeature(photonFeatureId);
+    // await this.photonFeatureRepository.update(photonFeatureId, photonFeatureDto);
+    //
+    // return this.findOnePhotonFeature(photonFeatureId);
   }
 
   async removePhotonFeature(photonFeatureId: string) {

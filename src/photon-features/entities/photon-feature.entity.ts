@@ -1,4 +1,3 @@
-import { IsNotEmpty } from 'class-validator';
 import { Column, Entity, OneToOne } from 'typeorm';
 
 import { BaseEntity } from '@/base-entities/base-entity.entity';
@@ -6,72 +5,69 @@ import { Favorite } from '@/favorites/entities/favorite.entity';
 
 @Entity({ name: 'app_photon_feature' })
 export class PhotonFeature extends BaseEntity {
-  @IsNotEmpty()
+  // @IsNotEmpty()
   @Column({ type: 'varchar', default: 'Feature' })
-  type: string;
+  photon_feature_type: string;
 
   @Column({ type: 'varchar' })
-  geometryType: string;
+  geometry_type: string;
 
   @Column({ type: 'float' })
-  geometryCoordinatesX: number;
+  geometry_coordinates_x: number;
 
   @Column({ type: 'float' })
-  geometryCoordinatesY: number;
+  geometry_coordinates_y: number;
+
+  @Column({ type: 'float' })
+  property_osm_id: number;
 
   @Column({ type: 'varchar' })
-  propertyName: string;
-
-  @Column({ type: 'int' })
-  osm_id: number;
-
-  @Column({ type: 'varchar' })
-  osm_type: string;
+  property_osm_type: string;
 
   @Column({ type: 'jsonb', nullable: true })
-  extent?: Array<number>;
+  property_extent?: Array<number>;
 
   @Column({ type: 'varchar', nullable: true })
-  country?: string;
+  property_country?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  osm_key?: string;
+  property_osm_key?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  city?: string;
+  property_city?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  countrycode?: string;
+  property_countrycode?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  osm_value?: string;
+  property_osm_value?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  postcode?: string;
+  property_postcode?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  name?: string;
+  property_name?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  state?: string;
+  property_state?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  street?: string;
+  property_street?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  housenumber?: string;
+  property_housenumber?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  locality?: string;
+  property_locality?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  county?: string;
+  property_county?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  district?: string;
+  property_district?: string;
 
-  // @Column({ name: 'favorite_id' })
-  // favoriteId: string;
+  @Column({ type: 'varchar', nullable: true })
+  property_type?: string;
 
   @OneToOne(() => Favorite, (favorite) => favorite.photonFeature, { onDelete: 'CASCADE' })
   // @JoinColumn({ name: 'favorite_id' })
