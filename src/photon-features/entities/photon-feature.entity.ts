@@ -5,7 +5,6 @@ import { Favorite } from '@/favorites/entities/favorite.entity';
 
 @Entity({ name: 'app_photon_feature' })
 export class PhotonFeature extends BaseEntity {
-  // @IsNotEmpty()
   @Column({ type: 'varchar', default: 'Feature' })
   photon_feature_type: string;
 
@@ -70,6 +69,5 @@ export class PhotonFeature extends BaseEntity {
   property_type?: string;
 
   @OneToOne(() => Favorite, (favorite) => favorite.photonFeature, { onDelete: 'CASCADE' })
-  // @JoinColumn({ name: 'favorite_id' })
   favorite: Favorite;
 }

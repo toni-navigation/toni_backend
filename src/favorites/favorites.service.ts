@@ -6,7 +6,7 @@ import { Action, CaslAbilityFactory } from '@/casl/casl-ability.factory/casl-abi
 import { CreateFavoriteDto } from '@/favorites/dto/create-favorite.dto';
 import { UpdateFavoriteDto } from '@/favorites/dto/update-favorite.dto';
 import { Favorite } from '@/favorites/entities/favorite.entity';
-import { convertPhotonFeatureDtoToEntity } from '@/functions/functions';
+import { convertPhotonFeatureDtoToEntity } from '@/functions/convertPhotonFeatureDtoToEntity';
 import { PhotonFeature } from '@/photon-features/entities/photon-feature.entity';
 import { User } from '@/users/entities/user.entity';
 
@@ -57,6 +57,7 @@ export class FavoritesService {
     if (!ability.can(Action.Read, favorite)) {
       throw new ForbiddenException('You are not allowed to read this favorite.');
     }
+    // const entity = await this.photonFeatureRepository.findOneByOrFail({ id: favorite.photonFeatureId })
 
     return favorite;
   }
