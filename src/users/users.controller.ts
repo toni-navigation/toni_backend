@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Req } from '@nestjs/common';
-import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { Public } from '@/authentication/decorators/public.decorator';
 import { RequestWithUser } from '@/types/RequestWithUser';
@@ -8,7 +8,8 @@ import { UpdateUserDto } from '@/users/dto/update-user.dto';
 import { UserRole } from '@/users/entities/user.entity';
 import { UsersService } from '@/users/users.service';
 
-@ApiCookieAuth()
+// @ApiCookieAuth()
+@ApiBearerAuth()
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {

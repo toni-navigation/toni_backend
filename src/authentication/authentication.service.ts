@@ -27,10 +27,11 @@ export class AuthenticationService {
 
   async login(user: User) {
     console.log(`[AuthService] login: user=${JSON.stringify(user)}`);
-    const payload = { email: user.email, firstname: user.firstname };
+    const payload = { user: { id: user.id, email: user.email, firstname: user.firstname } };
 
     return {
       access_token: this.jwtService.sign(payload),
+      id: user.id,
       email: user.email,
       firstname: user.firstname,
     };
