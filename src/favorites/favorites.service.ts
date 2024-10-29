@@ -57,9 +57,9 @@ export class FavoritesService {
     if (!ability.can(Action.Read, favorite)) {
       throw new ForbiddenException('You are not allowed to read this favorite.');
     }
-    // const entity = await this.photonFeatureRepository.findOneByOrFail({ id: favorite.photonFeatureId })
+    const entity = await this.photonFeatureRepository.findOneByOrFail({ id: favorite.photonFeatureId });
 
-    return favorite;
+    return { ...favorite, photonFeature: entity };
   }
 
   async updateFavorite(favoriteId: string, updateFavoriteDto: UpdateFavoriteDto, currentUser: User) {
