@@ -89,4 +89,16 @@ export class UsersService {
 
     return this.usersRepository.save(user);
   }
+
+  async validateUser(email: string, password: string): Promise<User | undefined> {
+    const user = await this.usersRepository.findOneOrFail({
+      where: { email: email.toLowerCase() },
+    });
+
+    if (await user.comparePassword(password)) {
+      return user;
+    }
+
+    throw new Error('AuthenticationService password mismatch.');
+  }
 }
