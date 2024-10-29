@@ -9,7 +9,7 @@ import { UserRole } from '@/users/entities/user.entity';
 import { UsersService } from '@/users/users.service';
 
 // @ApiCookieAuth()
-@ApiBearerAuth()
+@ApiBearerAuth('access-token')
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {

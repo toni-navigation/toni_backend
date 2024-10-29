@@ -24,7 +24,7 @@ export class AuthenticationController {
 
   @Get()
   // @ApiCookieAuth()
-  @ApiBearerAuth()
+  @ApiBearerAuth('access-token')
   getUser(@Request() request: RequestWithUser) {
     console.log(request.user);
 
@@ -33,7 +33,7 @@ export class AuthenticationController {
 
   @Delete()
   @HttpCode(204)
-  @ApiBearerAuth()
+  @ApiBearerAuth('access-token')
   // @ApiCookieAuth()
   async logout(@Request() request: RequestWithUser) {
     this.authenticationService.setJwtCookieLogout(request);
