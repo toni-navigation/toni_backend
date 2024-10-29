@@ -20,9 +20,9 @@ export class AuthenticationController {
   @ApiResponse({ status: 201, type: User })
   async login(@Request() request: RequestWithUser) {
     const { user } = request;
-    const jwt = this.authenticationService.generateJwt(user);
+    this.authenticationService.setJwtCookieLogin(request, user);
 
-    return { user, jwt };
+    return user;
   }
 
   @Get()

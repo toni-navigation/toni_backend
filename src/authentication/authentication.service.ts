@@ -18,12 +18,6 @@ export class AuthenticationService {
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
-  generateJwt(user: User): string {
-    const payload = { email: user.email, sub: user.id };
-
-    return this.jwtService.sign(payload);
-  }
-
   async validateLocalUser(email: string, password: string): Promise<User> {
     const user = await this.usersRepository.findOneOrFail({
       where: { email: email.toLowerCase() },
