@@ -64,15 +64,19 @@ export class UsersService {
 
   // Delete a user (only admins can delete users)
   async deleteUser(userId: string, currentUser: User): Promise<void> {
-    const user = await this.findUserById(userId);
-
+    const user = await this.usersRepository.findOneOrFail({
+      where: { id: userId },
+      relations: ['favorites', 'favorites.photonFeature'],
+    });
     const ability = this.abilityFactory.defineAbility(currentUser);
 
     if (!ability.can(Action.Delete, user)) {
       throw new ForbiddenException('You are not allowed to delete this user.');
     }
 
+    console.log('Deleting user:', user);
     await this.usersRepository.remove(user);
+    console.log('User deleted, should have cascaded deletions.');
   }
 
   // Change user role (only admins can change roles)

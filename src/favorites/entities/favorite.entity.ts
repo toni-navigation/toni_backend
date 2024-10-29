@@ -20,14 +20,14 @@ export class Favorite extends BaseEntity {
   @Column({ name: 'photon_feature_id' })
   photonFeatureId: string;
 
-  @OneToOne(() => PhotonFeature, { cascade: true })
-  @JoinColumn({ name: 'photon_feature_id' }) // This will create the foreign key column in Favorite
+  @OneToOne(() => PhotonFeature, { cascade: true, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'photon_feature_id' })
   photonFeature: PhotonFeature;
 
   @Column({ name: 'user_id' })
   userId: string;
 
-  @ManyToOne(() => User, (user) => user.favorites)
+  @ManyToOne(() => User, (user) => user.favorites, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
 }
