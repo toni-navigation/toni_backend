@@ -18,7 +18,6 @@ export class UsersService {
     return this.usersRepository.save(this.usersRepository.create(createUserDto));
   }
 
-  // Get all users (only admins can retrieve all users)
   async findAllUsers(currentUser: User): Promise<User[]> {
     const ability = this.abilityFactory.defineAbility(currentUser);
 
@@ -29,8 +28,13 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  async findUserById(id: string): Promise<User> {
+  async findUserById(id: string, currentUser: User): Promise<User> {
     const user = await this.usersRepository.findOneByOrFail({ id });
+    const ability = this.abilityFactory.defineAbility(currentUser);
+
+    if (!ability.can(Action.Read, user)) {
+      throw new ForbiddenException('You are not allowed to retrieve this user.');
+    }
 
     if (!user) {
       throw new NotFoundException('User not found');
@@ -40,7 +44,7 @@ export class UsersService {
   }
 
   async updateUser(userId: string, updateUserDto: UpdateUserDto, currentUser: User) {
-    const user = await this.findUserById(userId);
+    const user = await this.findUserById(userId, currentUser);
 
     const ability = this.abilityFactory.defineAbility(currentUser);
 
@@ -53,7 +57,6 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  // Delete a user (only admins can delete users)
   async deleteUser(userId: string, currentUser: User): Promise<void> {
     const user = await this.usersRepository.findOneOrFail({
       where: { id: userId },
@@ -65,8 +68,6 @@ export class UsersService {
       throw new ForbiddenException('You are not allowed to delete this user.');
     }
 
-    console.log('Deleting user:', user);
     await this.usersRepository.remove(user);
-    console.log('User deleted, should have cascaded deletions.');
   }
 }
