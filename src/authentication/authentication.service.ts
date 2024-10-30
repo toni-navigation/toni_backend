@@ -20,13 +20,10 @@ export class AuthenticationService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
-    console.log(`[AuthService] validateUser: email=${email}, password=${password}`);
-
     return this.usersService.validateUser(email, password);
   }
 
   async login(user: User) {
-    console.log(`[AuthService] login: user=${JSON.stringify(user)}`);
     const payload = { user: { id: user.id, email: user.email, firstname: user.firstname } };
 
     return {

@@ -26,8 +26,6 @@ export class AuthenticationController {
   // @ApiCookieAuth()
   @ApiBearerAuth('access-token')
   getUser(@Request() request: RequestWithUser) {
-    console.log(request.user);
-
     return request.user;
   }
 
