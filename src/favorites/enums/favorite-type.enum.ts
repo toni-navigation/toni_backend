@@ -1,4 +1,4 @@
-export enum FavoriteType {
+export enum DestinationType {
   HOME = 'home',
   NORMAL = 'normal',
 }

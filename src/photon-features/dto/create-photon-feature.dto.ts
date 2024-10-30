@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsObject, ValidateNested } from 'class-validator';
 
-import { PointDto } from '@/users/dto/point.dto';
+import { PointDto } from '@/photon-features/dto/point.dto';
 
 export class CreatePhotonFeatureDto {
   @IsNotEmpty()

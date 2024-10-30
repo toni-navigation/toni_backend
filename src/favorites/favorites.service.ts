@@ -6,6 +6,7 @@ import { Action, CaslAbilityFactory } from '@/casl/casl-ability.factory/casl-abi
 import { CreateFavoriteDto } from '@/favorites/dto/create-favorite.dto';
 import { UpdateFavoriteDto } from '@/favorites/dto/update-favorite.dto';
 import { Favorite } from '@/favorites/entities/favorite.entity';
+import { convertEntityToPhotonFeatureDto } from '@/functions/convertEntityToPhotonFeatureDto';
 import { convertPhotonFeatureDtoToEntity } from '@/functions/convertPhotonFeatureDtoToEntity';
 import { PhotonFeature } from '@/photon-features/entities/photon-feature.entity';
 import { User } from '@/users/entities/user.entity';
@@ -26,24 +27,12 @@ export class FavoritesService {
       throw new ForbiddenException('You are not allowed to create a favorite.');
     }
 
-    // const photonFeatureEntity = this.photonFeatureRepository.create(
-    //   convertPhotonFeatureDtoToEntity(createFavoriteDto.photonFeature),
-    // );
-    // const savedPhotonFeature = await this.photonFeatureRepository.save(photonFeatureEntity);
-    // const favorite = this.favoritesRepository.create({
-    //   name: createFavoriteDto.name,
-    //   type: createFavoriteDto.type,
-    //   userId: currentUser.id,
-    //   photonFeatureId: savedPhotonFeature.id,
-    // });
-    //
-    // return this.favoritesRepository.save(favorite);
-
-    const photonFeature = this.photonFeatureRepository.create(createFavoriteDto.photonFeature);
+    const photonFeature = this.photonFeatureRepository.create(
+      convertPhotonFeatureDtoToEntity(createFavoriteDto.photonFeature),
+    );
     await this.photonFeatureRepository.save(photonFeature);
 
-    const favorite = this.favoritesRepository.create({ ...createFavoriteDto, photonFeature });
-    favorite.user = currentUser;
+    const favorite = this.favoritesRepository.create({ ...createFavoriteDto, photonFeature, user: currentUser });
 
     return this.favoritesRepository.save(favorite);
   }
@@ -59,7 +48,10 @@ export class FavoritesService {
       relations: ['photonFeature'],
     });
 
-    return favorites;
+    return favorites.map((favorite) => ({
+      ...favorite,
+      photonFeature: convertEntityToPhotonFeatureDto(favorite.photonFeature),
+    }));
   }
 
   async findFavoriteById(favoriteId: string, currentUser: User) {
@@ -73,7 +65,7 @@ export class FavoritesService {
       throw new ForbiddenException('You are not allowed to read this favorite.');
     }
 
-    return favorite;
+    return { ...favorite, photonFeature: convertEntityToPhotonFeatureDto(favorite.photonFeature) };
   }
 
   async updateFavorite(favoriteId: string, updateFavoriteDto: UpdateFavoriteDto, currentUser: User) {
@@ -87,36 +79,28 @@ export class FavoritesService {
       throw new ForbiddenException('You are not allowed to update this favorite.');
     }
 
-    if (!updateFavoriteDto.photonFeature) {
-      throw new Error('You are not allowed to update this favorite.');
+    if (updateFavoriteDto.photonFeature) {
+      const photonFeature = await this.photonFeatureRepository.findOneByOrFail({ id: favorite.photonFeatureId });
+      await this.photonFeatureRepository.save(
+        Object.assign(photonFeature, convertPhotonFeatureDtoToEntity(updateFavoriteDto.photonFeature)),
+      );
     }
 
-    const photonFeature = await this.photonFeatureRepository.findOneByOrFail({ id: favorite.photonFeatureId });
-    const updatedPhotonFeature = await this.photonFeatureRepository.save(
-      Object.assign(photonFeature, convertPhotonFeatureDtoToEntity(updateFavoriteDto.photonFeature)),
-    );
-
-    return this.favoritesRepository.save(
-      Object.assign(favorite, {
-        name: updateFavoriteDto.name,
-        type: updateFavoriteDto.type,
-        photonFeatureId: updatedPhotonFeature.id,
-      }),
-    );
+    return this.favoritesRepository.save(Object.assign(favorite, updateFavoriteDto));
   }
 
   async deleteFavorite(favoriteId: string, currentUser: User) {
-    const favorite = await this.favoritesRepository.findOneByOrFail({ id: favoriteId });
+    const favorite = await this.favoritesRepository.findOneOrFail({
+      where: { id: favoriteId },
+    });
 
     const ability = this.abilityFactory.defineAbility(currentUser);
 
     if (!ability.can(Action.Delete, favorite)) {
       throw new ForbiddenException('You are not allowed to delete this favorite.');
     }
+
     const entity = await this.photonFeatureRepository.findOneByOrFail({ id: favorite.photonFeatureId });
-
     await this.photonFeatureRepository.remove(entity);
-
-    return this.favoritesRepository.remove(favorite);
   }
 }

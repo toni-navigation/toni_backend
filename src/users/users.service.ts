@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { Action, CaslAbilityFactory } from '@/casl/casl-ability.factory/casl-ability.factory';
 import { CreateUserDto } from '@/users/dto/create-user.dto';
 import { UpdateUserDto } from '@/users/dto/update-user.dto';
-import { User, UserRole } from '@/users/entities/user.entity';
+import { User } from '@/users/entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -29,18 +29,9 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  async findUserById(id: string) {
+  async findUserById(id: string): Promise<User> {
     const user = await this.usersRepository.findOneByOrFail({ id });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
 
-    return user;
-  }
-
-  // Find a user by email
-  async findUserByEmail(email: string): Promise<User> {
-    const user = await this.usersRepository.findOne({ where: { email } });
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -77,20 +68,5 @@ export class UsersService {
     console.log('Deleting user:', user);
     await this.usersRepository.remove(user);
     console.log('User deleted, should have cascaded deletions.');
-  }
-
-  // Change user role (only admins can change roles)
-  async changeUserRole(userId: string, newRole: UserRole, currentUser: User): Promise<User> {
-    const user = await this.findUserById(userId);
-
-    const ability = this.abilityFactory.defineAbility(currentUser);
-
-    if (!ability.can(Action.Update, user)) {
-      throw new ForbiddenException("You are not allowed to update this user's role.");
-    }
-
-    user.role = newRole;
-
-    return this.usersRepository.save(user);
   }
 }

@@ -3,7 +3,7 @@ import { Column, Entity, OneToOne } from 'typeorm';
 import { BaseEntity } from '@/base-entities/base-entity.entity';
 import { Favorite } from '@/favorites/entities/favorite.entity';
 
-@Entity({ name: 'app_photon_feature' })
+@Entity({ name: 'photon_features' })
 export class PhotonFeature extends BaseEntity {
   @Column({ type: 'jsonb' })
   coordinates: Array<number>;
@@ -59,6 +59,6 @@ export class PhotonFeature extends BaseEntity {
   @Column({ type: 'varchar', nullable: true })
   type?: string;
 
-  @OneToOne(() => Favorite, (favorite) => favorite.photonFeature)
+  @OneToOne(() => Favorite, (favorite) => favorite.photonFeature, { onDelete: 'CASCADE' })
   favorite: Favorite;
 }

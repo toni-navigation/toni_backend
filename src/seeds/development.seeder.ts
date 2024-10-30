@@ -1,7 +1,7 @@
 import { Seeder } from '@jorgebodega/typeorm-seeding';
 import { DataSource } from 'typeorm';
 
-import { User } from '@/users/entities/user.entity';
+import { User, UserRole } from '@/users/entities/user.entity';
 
 export default class DevelopmentSeeder extends Seeder {
   async run(dataSource: DataSource) {
@@ -10,24 +10,36 @@ export default class DevelopmentSeeder extends Seeder {
 
   private static async exampleSetup(dataSource: DataSource) {
     const usersRepository = dataSource.getRepository(User);
-
-    await usersRepository.save(
-      [
-        {
-          email: 'a@example.com',
-        },
-        {
-          email: 'b@example.com',
-        },
-        {
-          email: 'c@example.com',
-        },
-      ].map((data) =>
-        usersRepository.create({
-          ...data,
-          password: 'Test1234',
-        }),
-      ),
-    );
+    try {
+      await usersRepository.save(
+        [
+          {
+            firstname: 'John',
+            lastname: 'Doe',
+            role: UserRole.ADMIN,
+            email: 'a@example.com',
+          },
+          {
+            firstname: 'Jane',
+            lastname: 'Doe',
+            role: UserRole.USER,
+            email: 'b@example.com',
+          },
+          {
+            firstname: 'Alice',
+            lastname: 'Smith',
+            role: UserRole.USER,
+            email: 'c@example.com',
+          },
+        ].map((data) =>
+          usersRepository.create({
+            ...data,
+            password: 'Test1234',
+          }),
+        ),
+      );
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

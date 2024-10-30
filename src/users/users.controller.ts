@@ -1,11 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req } from '@nestjs/common';
 import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 
 import { Public } from '@/authentication/decorators/public.decorator';
 import { RequestWithUser } from '@/types/RequestWithUser';
 import { CreateUserDto } from '@/users/dto/create-user.dto';
 import { UpdateUserDto } from '@/users/dto/update-user.dto';
-import { UserRole } from '@/users/entities/user.entity';
 import { UsersService } from '@/users/users.service';
 
 @ApiCookieAuth()
@@ -45,13 +44,5 @@ export class UsersController {
     const currentUser = req.user;
 
     return this.usersService.deleteUser(userId, currentUser);
-  }
-
-  // Change user role (admin only)
-  @Put(':userId/role')
-  async changeUserRole(@Param('userId') userId: string, @Body('role') newRole: UserRole, @Req() req: RequestWithUser) {
-    const currentUser = req.user;
-
-    return this.usersService.changeUserRole(userId, newRole, currentUser);
   }
 }
