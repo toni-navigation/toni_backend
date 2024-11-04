@@ -21,7 +21,7 @@ export class UsersService {
   async findAllUsers(currentUser: User): Promise<User[]> {
     const ability = this.abilityFactory.defineAbility(currentUser);
 
-    if (!ability.can(Action.Read, 'all')) {
+    if (ability.cannot(Action.Read, 'all')) {
       throw new ForbiddenException('You are not allowed to retrieve all users.');
     }
 
@@ -32,7 +32,7 @@ export class UsersService {
     const user = await this.usersRepository.findOneByOrFail({ id });
     const ability = this.abilityFactory.defineAbility(currentUser);
 
-    if (!ability.can(Action.Read, user)) {
+    if (ability.cannot(Action.Read, user)) {
       throw new ForbiddenException('You are not allowed to retrieve this user.');
     }
 
@@ -48,7 +48,7 @@ export class UsersService {
 
     const ability = this.abilityFactory.defineAbility(currentUser);
 
-    if (!ability.can(Action.Update, user)) {
+    if (ability.cannot(Action.Update, user)) {
       throw new ForbiddenException('You are not allowed to update this user.');
     }
 
@@ -64,7 +64,7 @@ export class UsersService {
     });
     const ability = this.abilityFactory.defineAbility(currentUser);
 
-    if (!ability.can(Action.Delete, user)) {
+    if (ability.cannot(Action.Delete, user)) {
       throw new ForbiddenException('You are not allowed to delete this user.');
     }
 

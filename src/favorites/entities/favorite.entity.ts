@@ -1,11 +1,15 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 
 import { BaseEntity } from '@/base-entities/base-entity.entity';
 import { DestinationType } from '@/favorites/enums/favorite-type.enum';
+import { convertEntityToPhotonFeatureDto } from '@/functions/convertEntityToPhotonFeatureDto';
+import { CreatePhotonFeatureDto } from '@/photon-features/dto/create-photon-feature.dto';
 import { PhotonFeature } from '@/photon-features/entities/photon-feature.entity';
 import { User } from '@/users/entities/user.entity';
 
-@Entity({ name: 'favorites' })
+@Entity()
 export class Favorite extends BaseEntity {
   @Column('text')
   name: string;
@@ -17,11 +21,13 @@ export class Favorite extends BaseEntity {
   })
   destinationType: DestinationType;
 
-  @Column({ name: 'photon_feature_id' })
-  photonFeatureId: string;
+  @OneToOne(() => PhotonFeature, { cascade: ['insert', 'update'], nullable: false })
+  @Transform((params) => {
+    console.log(params.value);
 
-  @OneToOne(() => PhotonFeature, { onDelete: 'CASCADE', cascade: true })
-  @JoinColumn({ name: 'photon_feature_id' })
+    return convertEntityToPhotonFeatureDto(params.value);
+  })
+  @ApiProperty({ type: CreatePhotonFeatureDto })
   photonFeature: PhotonFeature;
 
   @Column({ name: 'user_id' })

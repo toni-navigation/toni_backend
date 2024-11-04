@@ -1,10 +1,13 @@
-import { CreatePhotonFeatureDto } from '@/photon-features/dto/create-photon-feature.dto';
+import { DeepPartial } from 'typeorm';
 
-export const convertPhotonFeatureDtoToEntity = (photonFeature: CreatePhotonFeatureDto) => {
+import { CreatePhotonFeatureDto } from '@/photon-features/dto/create-photon-feature.dto';
+import { PhotonFeature } from '@/photon-features/entities/photon-feature.entity';
+
+export const convertPhotonFeatureDtoToEntity = (photonFeature: CreatePhotonFeatureDto): DeepPartial<PhotonFeature> => {
   const { properties, geometry } = photonFeature;
 
   return {
-    coordinates: geometry.coordinates,
+    geometry,
     ...properties,
   };
 };

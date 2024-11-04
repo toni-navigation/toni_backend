@@ -1,6 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsObject, ValidateNested } from 'class-validator';
 
+import { PhotonFeaturePropertyDto } from '@/photon-features/dto/photon-feature-property.dto';
 import { PointDto } from '@/photon-features/dto/point.dto';
 
 export class CreatePhotonFeatureDto {
@@ -13,9 +14,8 @@ export class CreatePhotonFeatureDto {
   geometry: PointDto;
 
   @IsObject()
+  @ValidateNested()
+  @Type(() => PhotonFeaturePropertyDto)
   @IsNotEmpty()
-  readonly properties: {
-    name: string;
-    [key: string]: any;
-  };
+  properties: PhotonFeaturePropertyDto;
 }

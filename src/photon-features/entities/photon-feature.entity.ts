@@ -1,12 +1,17 @@
-import { Column, Entity, OneToOne } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, OneToOne, PrimaryColumn, RelationId } from 'typeorm';
 
-import { BaseEntity } from '@/base-entities/base-entity.entity';
+import { TimestampEntity } from '@/base-entities/timestamp-entity.entity';
 import { Favorite } from '@/favorites/entities/favorite.entity';
+import { PointDto } from '@/photon-features/dto/point.dto';
 
-@Entity({ name: 'photon_features' })
-export class PhotonFeature extends BaseEntity {
-  @Column({ type: 'jsonb' })
-  coordinates: Array<number>;
+@Entity()
+export class PhotonFeature extends TimestampEntity {
+  @Index({ spatial: true })
+  @Column('geometry', {
+    spatialFeatureType: 'Point',
+    srid: 4326,
+  })
+  geometry: PointDto;
 
   @Column({ type: 'float' })
   osm_id: number;
@@ -59,6 +64,12 @@ export class PhotonFeature extends BaseEntity {
   @Column({ type: 'varchar', nullable: true })
   type?: string;
 
-  @OneToOne(() => Favorite, (favorite) => favorite.photonFeature, { onDelete: 'CASCADE' })
+  @Column({ name: 'favorite_id' })
+  @PrimaryColumn('uuid')
+  @RelationId((photonFeature: PhotonFeature) => photonFeature.favorite)
+  favorite_id: string;
+
+  @OneToOne(() => Favorite, (favorite) => favorite.photonFeature, { onDelete: 'CASCADE', nullable: false })
+  @JoinColumn({ name: 'favorite_id' }) // Specify the foreign key column name
   favorite: Favorite;
 }
