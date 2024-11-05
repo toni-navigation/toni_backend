@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, Index, JoinColumn, OneToOne, PrimaryColumn, RelationId } from 'typeorm';
 
 import { TimestampEntity } from '@/base-entities/timestamp-entity.entity';
@@ -6,6 +7,15 @@ import { PointDto } from '@/photon-features/dto/point.dto';
 
 @Entity()
 export class PhotonFeature extends TimestampEntity {
+  @RelationId((photonFeature: PhotonFeature) => photonFeature.favorite)
+  @PrimaryColumn('uuid')
+  favoriteId: string;
+
+  @OneToOne(() => Favorite, (favorite) => favorite.photonFeature, { onDelete: 'CASCADE' })
+  @JoinColumn()
+  @ApiProperty({ description: 'Favorit' })
+  favorite: Favorite;
+
   @Index({ spatial: true })
   @Column('geometry', {
     spatialFeatureType: 'Point',
@@ -63,13 +73,7 @@ export class PhotonFeature extends TimestampEntity {
 
   @Column({ type: 'varchar', nullable: true })
   type?: string;
-
-  @Column({ name: 'favorite_id' })
-  @PrimaryColumn('uuid')
-  @RelationId((photonFeature: PhotonFeature) => photonFeature.favorite)
-  favorite_id: string;
-
-  @OneToOne(() => Favorite, (favorite) => favorite.photonFeature, { onDelete: 'CASCADE', nullable: false })
-  @JoinColumn({ name: 'favorite_id' }) // Specify the foreign key column name
-  favorite: Favorite;
 }
+// @Transform((params) => {
+//   console.log('Transform in photon-feature.entity.ts', params);
+// })
