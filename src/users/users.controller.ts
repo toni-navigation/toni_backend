@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Req } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 
 import { Public } from '@/authentication/decorators/public.decorator';
 import { RequestWithUser } from '@/types/RequestWithUser';
@@ -21,38 +21,35 @@ export class UsersController {
     return this.usersService.createUser(createUserDto);
   }
 
-  // Get all users (admin only)
   @Get()
   async findAllUsers(@Req() request: RequestWithUser) {
-    const currentUser = request.user;
+    const { user: currentUser } = request;
 
     return this.usersService.findAllUsers(currentUser);
   }
 
   @Get(':userId')
-  async findUserById(@Param('userId') userId: string) {
-    return this.usersService.findUserById(userId);
+  async findUserById(@Param('userId') userId: string, @Req() request: RequestWithUser) {
+    const { user: currentUser } = request;
+
+    return this.usersService.findUserById(userId, currentUser);
   }
 
   @Patch(':userId')
-  async updateUser(@Param('userId') userId: string, @Body() updateUserDto: UpdateUserDto, @Req() req: RequestWithUser) {
-    const currentUser = req.user;
+  async updateUser(
+    @Param('userId') userId: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @Req() request: RequestWithUser,
+  ) {
+    const { user: currentUser } = request;
 
     return this.usersService.updateUser(userId, updateUserDto, currentUser);
   }
 
   @Delete(':userId')
-  async deleteUser(@Param('userId') userId: string, @Req() req: RequestWithUser) {
-    const currentUser = req.user;
+  async deleteUser(@Param('userId') userId: string, @Req() request: RequestWithUser) {
+    const { user: currentUser } = request;
 
     return this.usersService.deleteUser(userId, currentUser);
-  }
-
-  // Change user role (admin only)
-  @Put(':userId/role')
-  async changeUserRole(@Param('userId') userId: string, @Body('role') newRole: UserRole, @Req() req: RequestWithUser) {
-    const currentUser = req.user;
-
-    return this.usersService.changeUserRole(userId, newRole, currentUser);
   }
 }

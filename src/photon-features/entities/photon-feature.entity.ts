@@ -1,73 +1,80 @@
-import { Column, Entity, OneToOne } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
+import { Column, Entity, Index, JoinColumn, OneToOne, PrimaryColumn, RelationId } from 'typeorm';
 
-import { BaseEntity } from '@/base-entities/base-entity.entity';
+import { TimestampEntity } from '@/base-entities/timestamp-entity.entity';
 import { Favorite } from '@/favorites/entities/favorite.entity';
+import { PointDto } from '@/photon-features/dto/point.dto';
 
-@Entity({ name: 'app_photon_feature' })
-export class PhotonFeature extends BaseEntity {
-  @Column({ type: 'varchar', default: 'Feature' })
-  photon_feature_type: string;
+@Entity()
+export class PhotonFeature extends TimestampEntity {
+  @RelationId((photonFeature: PhotonFeature) => photonFeature.favorite)
+  @PrimaryColumn('uuid')
+  favoriteId: string;
+
+  @OneToOne(() => Favorite, (favorite) => favorite.photonFeature, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  @JoinColumn()
+  @ApiProperty({ description: 'Favorit' })
+  @Transform((params) => {
+    console.log('Transform in photon-feature.entity.ts', params);
+  })
+  favorite: Favorite;
+
+  @Index({ spatial: true })
+  @Column('geometry', {
+    spatialFeatureType: 'Point',
+    srid: 4326,
+  })
+  geometry: PointDto;
+
+  @Column({ type: 'float' })
+  osm_id: number;
 
   @Column({ type: 'varchar' })
-  geometry_type: string;
-
-  @Column({ type: 'float' })
-  geometry_coordinates_x: number;
-
-  @Column({ type: 'float' })
-  geometry_coordinates_y: number;
-
-  @Column({ type: 'float' })
-  property_osm_id: number;
-
-  @Column({ type: 'varchar' })
-  property_osm_type: string;
+  osm_type: string;
 
   @Column({ type: 'jsonb', nullable: true })
-  property_extent?: Array<number>;
+  extent?: Array<number>;
 
   @Column({ type: 'varchar', nullable: true })
-  property_country?: string;
+  country?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  property_osm_key?: string;
+  osm_key?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  property_city?: string;
+  city?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  property_countrycode?: string;
+  countrycode?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  property_osm_value?: string;
+  osm_value?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  property_postcode?: string;
+  postcode?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  property_name?: string;
+  name?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  property_state?: string;
+  state?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  property_street?: string;
+  street?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  property_housenumber?: string;
+  housenumber?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  property_locality?: string;
+  locality?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  property_county?: string;
+  county?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  property_district?: string;
+  district?: string;
 
   @Column({ type: 'varchar', nullable: true })
-  property_type?: string;
-
-  @OneToOne(() => Favorite, (favorite) => favorite.photonFeature, { onDelete: 'CASCADE' })
-  favorite: Favorite;
+  type?: string;
 }

@@ -1,17 +1,13 @@
-import { CreatePhotonFeatureDto } from '@/photon-features/dto/create-photon-feature.dto';
+import { DeepPartial } from 'typeorm';
 
-export const convertPhotonFeatureDtoToEntity = (photonFeature: CreatePhotonFeatureDto) => {
-  const { type, properties, geometry } = photonFeature;
-  const suffixedProperties = Object.fromEntries(
-    Object.entries(properties).map(([key, value]) => [`property_${key}`, value]),
-  );
-  const [geometryCoordinatesX, geometryCoordinatesY] = geometry.coordinates;
+import { CreatePhotonFeatureDto } from '@/photon-features/dto/create-photon-feature.dto';
+import { PhotonFeature } from '@/photon-features/entities/photon-feature.entity';
+
+export const convertPhotonFeatureDtoToEntity = (photonFeature: CreatePhotonFeatureDto): DeepPartial<PhotonFeature> => {
+  const { properties, geometry } = photonFeature;
 
   return {
-    photon_feature_type: type,
-    geometry_coordinates_x: geometryCoordinatesX,
-    geometry_coordinates_y: geometryCoordinatesY,
-    geometry_type: geometry.type,
-    ...suffixedProperties,
+    geometry,
+    ...properties,
   };
 };

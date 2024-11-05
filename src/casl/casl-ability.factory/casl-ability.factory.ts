@@ -1,4 +1,4 @@
-import { Ability, AbilityBuilder, AbilityClass, ExtractSubjectType, InferSubjects } from '@casl/ability';
+import { AbilityBuilder, createMongoAbility, ExtractSubjectType, InferSubjects, MongoAbility } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
 
 import { Favorite } from '@/favorites/entities/favorite.entity';
@@ -13,28 +13,24 @@ export enum Action {
 }
 
 type Subjects = InferSubjects<typeof Favorite | typeof User> | 'all';
-export type AppAbility = Ability<[Action, Subjects]>;
+export type AppAbility = MongoAbility<[Action, Subjects]>;
 
 @Injectable()
 export class CaslAbilityFactory {
   defineAbility(user: User) {
-    const { can, build } = new AbilityBuilder<Ability<[Action, Subjects]>>(Ability as AbilityClass<AppAbility>);
+    const { can, build } = new AbilityBuilder<AppAbility>(createMongoAbility);
 
     if (user.role === UserRole.ADMIN) {
-      can(Action.Manage, 'all'); // read-write access to everything
+      can(Action.Manage, 'all');
     } else {
-      // Regular users can only manage their own Favorites
       can(Action.Manage, Favorite, { userId: user.id });
 
-      // Regular users can read their own profiles
       can(Action.Read, User, { id: user.id });
-      // Regular users can update their own profile
       can(Action.Update, User, { id: user.id });
       can(Action.Delete, User, { id: user.id });
     }
 
     return build({
-      // Read https://casl.js.org/v6/en/guide/subject-type-detection#use-classes-as-subject-types for details
       detectSubjectType: (item) => item.constructor as ExtractSubjectType<Subjects>,
     });
   }

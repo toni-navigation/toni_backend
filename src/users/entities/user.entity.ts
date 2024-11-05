@@ -12,7 +12,6 @@ export enum UserRole {
 }
 @Entity({ name: 'app_user' })
 export class User extends BaseEntity {
-  @Index({ unique: true })
   @Column('text')
   firstname: string;
 
@@ -38,7 +37,7 @@ export class User extends BaseEntity {
   @Column('double precision', { nullable: true, default: null })
   calibrationFactor: number | null;
 
-  @OneToMany(() => Favorite, (favorite) => favorite.user)
+  @OneToMany(() => Favorite, (favorite) => favorite.user, { cascade: true, onDelete: 'CASCADE' })
   favorites: Favorite[];
 
   @BeforeInsert()
