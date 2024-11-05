@@ -25,7 +25,7 @@ export class FavoritesService {
   async createFavorite(createFavoriteDto: CreateFavoriteDto, currentUser: User) {
     const ability = this.abilityFactory.defineAbility(currentUser);
 
-    if (!ability.can(Action.Create, Favorite)) {
+    if (ability.cannot(Action.Create, Favorite)) {
       throw new ForbiddenException('You are not allowed to create a favorite.');
     }
     const photonFeatureData = convertPhotonFeatureDtoToEntity(createFavoriteDto.photonFeature);
@@ -42,7 +42,7 @@ export class FavoritesService {
   async findAllFavorites(currentUser: User) {
     const ability = this.abilityFactory.defineAbility(currentUser);
 
-    if (!ability.can(Action.Read, Favorite)) {
+    if (ability.cannot(Action.Read, Favorite)) {
       throw new ForbiddenException('You are not allowed to read favorites.');
     }
 
@@ -64,7 +64,7 @@ export class FavoritesService {
     });
 
     const ability = this.abilityFactory.defineAbility(currentUser);
-    if (!ability.can(Action.Read, photonFeature.favorite)) {
+    if (ability.cannot(Action.Read, photonFeature.favorite)) {
       throw new ForbiddenException('You are not allowed to read this favorite.');
     }
 
@@ -81,7 +81,7 @@ export class FavoritesService {
     });
 
     const ability = this.abilityFactory.defineAbility(currentUser);
-    if (!ability.can(Action.Update, favorite)) {
+    if (ability.cannot(Action.Update, favorite)) {
       throw new ForbiddenException('You are not allowed to update this favorite.');
     }
     const { photonFeature, ...rest } = updateFavoriteDto;
@@ -107,7 +107,7 @@ export class FavoritesService {
 
     const ability = this.abilityFactory.defineAbility(currentUser);
 
-    if (!ability.can(Action.Delete, photonFeature.favorite)) {
+    if (ability.cannot(Action.Delete, photonFeature.favorite)) {
       throw new ForbiddenException('You are not allowed to delete this favorite.');
     }
 
