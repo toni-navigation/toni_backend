@@ -19,13 +19,9 @@ export class Favorite extends BaseEntity {
   })
   destinationType: DestinationType;
 
-  // @Transform((params) => {
-  //   console.log('Transform in favorite.entity.ts');
-  //
-  //   // return convertEntityToPhotonFeatureDto(params.value);
-  // })
-  @OneToOne(() => PhotonFeature, { cascade: ['insert', 'update'] })
+  @OneToOne(() => PhotonFeature, (photonFeature) => photonFeature.favorite, { cascade: ['insert', 'update'] })
   @ApiProperty({ type: CreatePhotonFeatureDto })
+  // @Transform((params) => convertEntityToPhotonFeatureDto(params.value))
   photonFeature: PhotonFeature;
 
   @Column({ name: 'user_id' })

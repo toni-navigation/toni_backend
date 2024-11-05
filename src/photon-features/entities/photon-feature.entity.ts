@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { Column, Entity, Index, JoinColumn, OneToOne, PrimaryColumn, RelationId } from 'typeorm';
 
 import { TimestampEntity } from '@/base-entities/timestamp-entity.entity';
@@ -11,9 +12,12 @@ export class PhotonFeature extends TimestampEntity {
   @PrimaryColumn('uuid')
   favoriteId: string;
 
-  @OneToOne(() => Favorite, (favorite) => favorite.photonFeature, { onDelete: 'CASCADE' })
+  @OneToOne(() => Favorite, (favorite) => favorite.photonFeature, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn()
   @ApiProperty({ description: 'Favorit' })
+  @Transform((params) => {
+    console.log('Transform in photon-feature.entity.ts', params);
+  })
   favorite: Favorite;
 
   @Index({ spatial: true })
@@ -74,6 +78,3 @@ export class PhotonFeature extends TimestampEntity {
   @Column({ type: 'varchar', nullable: true })
   type?: string;
 }
-// @Transform((params) => {
-//   console.log('Transform in photon-feature.entity.ts', params);
-// })

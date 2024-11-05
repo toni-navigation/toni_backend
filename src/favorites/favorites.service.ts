@@ -6,6 +6,7 @@ import { Action, CaslAbilityFactory } from '@/casl/casl-ability.factory/casl-abi
 import { CreateFavoriteDto } from '@/favorites/dto/create-favorite.dto';
 import { UpdateFavoriteDto } from '@/favorites/dto/update-favorite.dto';
 import { Favorite } from '@/favorites/entities/favorite.entity';
+import { convertEntityToPhotonFeatureDto } from '@/functions/convertEntityToPhotonFeatureDto';
 import { convertPhotonFeatureDtoToEntity } from '@/functions/convertPhotonFeatureDtoToEntity';
 import { PhotonFeature } from '@/photon-features/entities/photon-feature.entity';
 import { User } from '@/users/entities/user.entity';
@@ -34,101 +35,82 @@ export class FavoritesService {
       user: currentUser,
       photonFeature,
     });
-    const savedFavorite = this.favoritesRepository.save(favorite);
 
-    return savedFavorite;
-    //
-    // const queryRunner = this.dataSource.createQueryRunner();
-    // await queryRunner.connect();
-    // await queryRunner.startTransaction();
-    //
-    // try {
-    //   const favorite = queryRunner.manager.create(Favorite, {
-    //     ...rest,
-    //     user: currentUser,
-    //   });
-    //
-    //   const savedFavorite = await queryRunner.manager.save(favorite);
-    //
-    //   const photonFeatureEntity = queryRunner.manager.create(PhotonFeature, {
-    //     ...convertPhotonFeatureDtoToEntity(photonFeature),
-    //     favorite: savedFavorite, // Set the saved favorite
-    //   });
-    //
-    //   await queryRunner.manager.save(photonFeatureEntity);
-    //   await queryRunner.commitTransaction();
-    //
-    //   return convertEntityToPhotonFeatureDto(photonFeatureEntity);
-    // } catch (error) {
-    //   await queryRunner.rollbackTransaction();
-    //   throw error; // Re-throw the error for further handling
-    // } finally {
-    //   await queryRunner.release();
-    // }
+    return this.favoritesRepository.save(favorite);
   }
 
   async findAllFavorites(currentUser: User) {
-    // const ability = this.abilityFactory.defineAbility(currentUser);
-    //
-    // if (!ability.can(Action.Read, Favorite)) {
-    //   throw new ForbiddenException('You are not allowed to read favorites.');
-    // }
-    //
-    // const result = await this.photonFeatureRepository.find({
-    //   where: { favorite: { userId: currentUser.id } },
-    //   relations: ['favorite'],
-    // });
-    //
-    // return result.map((photonFeature) => convertEntityToPhotonFeatureDto(photonFeature));
+    const ability = this.abilityFactory.defineAbility(currentUser);
+
+    if (!ability.can(Action.Read, Favorite)) {
+      throw new ForbiddenException('You are not allowed to read favorites.');
+    }
+
+    const result = await this.favoritesRepository.find({
+      where: { userId: currentUser.id },
+      relations: ['photonFeature'],
+    });
+
+    return result.map((favorite) => ({
+      ...favorite,
+      photonFeature: convertEntityToPhotonFeatureDto(favorite.photonFeature),
+    }));
   }
 
   async findFavoriteById(favoriteId: string, currentUser: User) {
-    // const photonFeature = await this.photonFeatureRepository.findOneOrFail({
-    //   where: { favoriteId },
-    //   relations: ['favorite'],
-    // });
-    //
-    // const ability = this.abilityFactory.defineAbility(currentUser);
-    // if (!ability.can(Action.Read, photonFeature.favorite)) {
-    //   throw new ForbiddenException('You are not allowed to read this favorite.');
-    // }
-    //
-    // return convertEntityToPhotonFeatureDto(photonFeature);
+    const photonFeature = await this.photonFeatureRepository.findOneOrFail({
+      where: { favoriteId },
+      relations: ['favorite'],
+    });
+
+    const ability = this.abilityFactory.defineAbility(currentUser);
+    if (!ability.can(Action.Read, photonFeature.favorite)) {
+      throw new ForbiddenException('You are not allowed to read this favorite.');
+    }
+
+    return {
+      ...photonFeature.favorite,
+      photonFeature: convertEntityToPhotonFeatureDto(photonFeature),
+    };
   }
 
   async updateFavorite(favoriteId: string, updateFavoriteDto: UpdateFavoriteDto, currentUser: User) {
-    // const photonFeature = await this.photonFeatureRepository.findOneOrFail({
-    //   where: { favoriteId },
-    //   relations: ['favorite'],
-    // });
-    //
-    // const { favorite } = photonFeature;
-    //
-    // const ability = this.abilityFactory.defineAbility(currentUser);
-    // if (!ability.can(Action.Update, favorite)) {
-    //   throw new ForbiddenException('You are not allowed to update this favorite.');
-    // }
-    //
-    // if (updateFavoriteDto.photonFeature) {
-    //   Object.assign(photonFeature, convertPhotonFeatureDtoToEntity(updateFavoriteDto.photonFeature));
-    // }
-    // Object.assign(favorite, updateFavoriteDto);
-    //
-    // return this.favoritesRepository.save(favorite);
+    const favorite = await this.favoritesRepository.findOneOrFail({
+      where: { id: favoriteId },
+      relations: ['photonFeature'],
+    });
+
+    const ability = this.abilityFactory.defineAbility(currentUser);
+    if (!ability.can(Action.Update, favorite)) {
+      throw new ForbiddenException('You are not allowed to update this favorite.');
+    }
+    const { photonFeature, ...rest } = updateFavoriteDto;
+    Object.assign(favorite, rest);
+
+    if (photonFeature && favorite.photonFeature) {
+      Object.assign(favorite.photonFeature, convertPhotonFeatureDtoToEntity(photonFeature));
+    }
+
+    const savedFavorite = await this.favoritesRepository.save(favorite);
+
+    return {
+      ...savedFavorite,
+      photonFeature: savedFavorite.photonFeature,
+    };
   }
 
   async deleteFavorite(favoriteId: string, currentUser: User) {
-    // const photonFeature = await this.photonFeatureRepository.findOneOrFail({
-    //   where: { favoriteId },
-    //   relations: ['favorite'],
-    // });
-    //
-    // const ability = this.abilityFactory.defineAbility(currentUser);
-    //
-    // if (!ability.can(Action.Delete, photonFeature.favorite)) {
-    //   throw new ForbiddenException('You are not allowed to delete this favorite.');
-    // }
-    //
-    // return this.favoritesRepository.remove(photonFeature.favorite);
+    const photonFeature = await this.photonFeatureRepository.findOneOrFail({
+      where: { favoriteId },
+      relations: ['favorite'],
+    });
+
+    const ability = this.abilityFactory.defineAbility(currentUser);
+
+    if (!ability.can(Action.Delete, photonFeature.favorite)) {
+      throw new ForbiddenException('You are not allowed to delete this favorite.');
+    }
+
+    return this.favoritesRepository.remove(photonFeature.favorite);
   }
 }
