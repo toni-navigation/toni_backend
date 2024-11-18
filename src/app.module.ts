@@ -12,6 +12,7 @@ import { SerializationModule } from '@/serialization/serialization.module';
 import { environmentVariablesSchema } from '@/types/EnvironmentVariables';
 import { UsersModule } from '@/users/users.module';
 import { ValidationModule } from '@/validation/validation.module';
+import {User} from "@/users/entities/user.entity";
 
 @Module({
   imports: [

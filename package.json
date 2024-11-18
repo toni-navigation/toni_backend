@@ -23,7 +23,6 @@
     "typeorm-seeding": "ts-node --require tsconfig-paths/register ./node_modules/@jorgebodega/typeorm-seeding/dist/cli --dataSource src/ormconfig.ts",
     "db:reset": "npm run db:reset:postgres",
     "db:reset:postgres": "npm run typeorm schema:drop && npm run typeorm schema:sync && npm run typeorm-seeding seed src/seeds/development.seeder.ts"
-
   },
   "dependencies": {
     "@casl/ability": "^6.7.1",
@@ -73,7 +72,7 @@
     "eslint-config-airbnb-typescript": "18.0.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-import": "2.30.0",
-    "jest": "29.7.0",
+    "jest": "^29.7.0",
     "prettier": "3.3.3",
     "source-map-support": "0.5.21",
     "supertest": "7.0.0",
