@@ -1,5 +1,5 @@
 import { Controller, Delete, Get, HttpCode, Post, Request, UseGuards } from '@nestjs/common';
-import { ApiBody, ApiCookieAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { AuthenticationService } from '@/authentication/authentication.service';
 import { Public } from '@/authentication/decorators/public.decorator';
@@ -19,21 +19,20 @@ export class AuthenticationController {
   @ApiBody({ type: LoginUserDto })
   @ApiResponse({ status: 201, type: User })
   async login(@Request() request: RequestWithUser) {
-    const { user } = request;
-    this.authenticationService.setJwtCookieLogin(request, user);
-
-    return user;
+    return this.authenticationService.login(request.user);
   }
 
   @Get()
-  @ApiCookieAuth()
+  // @ApiCookieAuth()
+  @ApiBearerAuth('access-token')
   getUser(@Request() request: RequestWithUser) {
     return request.user;
   }
 
   @Delete()
   @HttpCode(204)
-  @ApiCookieAuth()
+  @ApiBearerAuth('access-token')
+  // @ApiCookieAuth()
   async logout(@Request() request: RequestWithUser) {
     this.authenticationService.setJwtCookieLogout(request);
   }

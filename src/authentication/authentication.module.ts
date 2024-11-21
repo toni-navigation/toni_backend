@@ -12,11 +12,13 @@ import { JwtStrategy } from '@/authentication/strategies/jwt.strategy';
 import { LocalStrategy } from '@/authentication/strategies/local.strategy';
 import { EnvironmentVariables } from '@/types/EnvironmentVariables';
 import { User } from '@/users/entities/user.entity';
+import { UsersModule } from '@/users/users.module';
 
 @Module({
   imports: [
     PassportModule,
     ConfigModule,
+    UsersModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService<EnvironmentVariables, true>) => ({
