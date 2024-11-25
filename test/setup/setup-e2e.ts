@@ -20,17 +20,17 @@ export async function setupE2E(): Promise<{ app: INestApplication; agent: GetAge
 
     const userRepository = moduleFixture.get<Repository<User>>(getRepositoryToken(User));
 
-    const hashedPassword1 = await argon2.hash('Test1234');
-    const hashedPassword2 = await argon2.hash('Test5678');
-    const hashedPasswordAdmin = await argon2.hash('Admin1234');
+    const password1 = 'Test1234';
+    const password2 = 'Test5678';
+    const passwordAdmin = 'Admin1234';
 
     await userRepository.clear();
 
     const users = await userRepository.save([
-        { email: 'e2e-first@example.com', password: hashedPassword1, firstname: 'First', lastname: 'E2E' },
-        { email: 'e2e-second@example.com', password: hashedPassword2, firstname: 'Second', lastname: 'E2E' },
-        { email: 'e2e-admin@example.com', password: hashedPasswordAdmin, firstname: 'Admin', lastname: 'E2E', role: UserRole.ADMIN }
-    ]);
+        { email: 'e2e-first@example.com', password: password1, firstname: 'First', lastname: 'E2E' },
+        { email: 'e2e-second@example.com', password: password2, firstname: 'Second', lastname: 'E2E' },
+        { email: 'e2e-admin@example.com', password: passwordAdmin, firstname: 'Admin', lastname: 'E2E', role: UserRole.ADMIN }
+    ].map(user => userRepository.create(user)));
 
     const agent = request.agent(app.getHttpServer());
     await agent
