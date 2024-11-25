@@ -1,11 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Req } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { CreateFavoriteDto } from '@/favorites/dto/create-favorite.dto';
 import { UpdateFavoriteDto } from '@/favorites/dto/update-favorite.dto';
 import { FavoritesService } from '@/favorites/favorites.service';
 import { RequestWithUser } from '@/types/RequestWithUser';
 
+@ApiBearerAuth('access-token')
 @ApiTags('Favorites')
 @Controller('favorites')
 export class FavoritesController {
