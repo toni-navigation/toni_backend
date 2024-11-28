@@ -1,12 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as cookie from 'cookie';
 import { Request } from 'express';
-import { Repository } from 'typeorm';
+import { EntityNotFoundError, Repository } from 'typeorm';
 
 import { EnvironmentVariables } from '@/types/EnvironmentVariables';
+import { CreateUserResponseDto } from '@/users/dto/create-user-response.dto';
 import { User } from '@/users/entities/user.entity';
 import { UsersService } from '@/users/users.service';
 
@@ -20,17 +21,22 @@ export class AuthenticationService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
-    return this.usersService.validateUser(email, password);
+    try {
+      return await this.usersService.validateUser(email, password);
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        throw new NotFoundException(`User with email ${email} not found`);
+      }
+      throw error;
+    }
   }
 
-  async login(user: User) {
+  async login(user: User): Promise<CreateUserResponseDto> {
     const payload = { user: { id: user.id, email: user.email, firstname: user.firstname } };
 
     return {
-      access_token: this.jwtService.sign(payload),
-      id: user.id,
-      email: user.email,
-      firstname: user.firstname,
+      accessToken: this.jwtService.sign(payload),
+      user,
     };
   }
 

@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AbilityModule } from '@/casl/casl.module';
@@ -7,7 +9,7 @@ import { UsersController } from '@/users/users.controller';
 import { UsersService } from '@/users/users.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), AbilityModule],
+  imports: [TypeOrmModule.forFeature([User]), AbilityModule, JwtModule, ConfigModule],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService, TypeOrmModule.forFeature([User])],

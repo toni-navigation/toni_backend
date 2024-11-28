@@ -1,4 +1,6 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -11,11 +13,32 @@ import { User } from '@/users/entities/user.entity';
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
+    private jwtService: JwtService,
+    private configService: ConfigService,
     private abilityFactory: CaslAbilityFactory,
   ) {}
 
-  createUser(createUserDto: CreateUserDto) {
-    return this.usersRepository.save(this.usersRepository.create(createUserDto));
+  async createUser(createUserDto: CreateUserDto) {
+    const existingUser = await this.usersRepository.findOne({
+      where: { email: createUserDto.email.toLowerCase() },
+    });
+
+    if (existingUser) {
+      throw new ConflictException('A user with this email already exists.');
+    }
+    const user = await this.usersRepository.save(this.usersRepository.create(createUserDto));
+    const accessToken = this.jwtService.sign(
+      { id: user.id },
+      {
+        secret: this.configService.get('JWT_SECRET'),
+        expiresIn: this.configService.get('JWT_EXPIRATION_TIME'),
+      },
+    );
+
+    return {
+      user,
+      accessToken,
+    };
   }
 
   async findAllUsers(currentUser: User): Promise<User[]> {
@@ -57,7 +80,7 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  async deleteUser(userId: string, currentUser: User): Promise<void> {
+  async deleteUser(userId: string, currentUser: User) {
     const user = await this.usersRepository.findOneOrFail({
       where: { id: userId },
       relations: ['favorites', 'favorites.photonFeature'],
