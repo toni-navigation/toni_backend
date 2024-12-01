@@ -1,26 +1,51 @@
 import { INestApplication } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-import * as request from 'supertest';
-
-import { AppModule } from '@/app.module';
+import {GetAgent, setupE2E} from "@/test/setup/setup-e2e";
+import {User} from "@/users/entities/user.entity";
 
 describe('Authentication', () => {
   let app: INestApplication;
+  let agent: GetAgent;
+  let agentTwo: GetAgent;
+  let adminAgent: GetAgent;
+  let users: User[];
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = moduleFixture.createNestApplication();
-    await app.init();
+  beforeAll(async () => {
+    ({ app, agent, agentTwo, adminAgent, users } = await setupE2E());
   });
 
-  it('is unauthorized per default', () => request(app.getHttpServer()).get('/authentication').expect(401));
+  afterEach(async () => {
+    await app.close();
+  });
 
-  it('can login with valid credentials', () =>
-    request(app.getHttpServer())
-      .post('/authentication')
-      .send({ email: 'a@example.com', password: 'Test1234' })
-      .expect(201));
+  it('is unauthorized per default', async () =>
+      await agent().get('/authentication').expect(401)
+  );
+
+  it('can login with valid credentials', async () =>
+      await agent()
+          .post('/authentication')
+          .send({email: 'e2e-first@example.com', password: 'Test1234'})
+          .expect(201)
+  );
+
+  it('cannot login with invalid credentials', async () =>
+      await agent()
+          .post('/authentication')
+          .send({email: 'e2e-first@example.com', password: 'Test5678'})
+          .expect(401)
+  );
+
+  it('can logout when user is logged in', async () => {
+    await agent()
+        .delete('/authentication')
+        .expect(204);
+
+  });
+
+  it('cannot logout when user is not logged in', async () =>
+      await agentTwo()
+          .delete('/authentication')
+          .expect(401)
+  );
+
 });
