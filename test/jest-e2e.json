@@ -7,6 +7,8 @@
     "^.+\\.(t|j)s(|x)$": "ts-jest"
   },
 
+  "globalSetup": "./setup/global-setup.ts",
+
   "moduleNameMapper": {
     "^@/test/(.*)$": "<rootDir>/../test/$1",
     "^@/(.*)$": "<rootDir>/../src/$1"
