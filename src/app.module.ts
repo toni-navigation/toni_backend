@@ -12,6 +12,7 @@ import { SerializationModule } from '@/serialization/serialization.module';
 import { environmentVariablesSchema } from '@/types/EnvironmentVariables';
 import { UsersModule } from '@/users/users.module';
 import { ValidationModule } from '@/validation/validation.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -42,6 +43,8 @@ import { ValidationModule } from '@/validation/validation.module';
     AbilityModule,
 
     PhotonFeaturesModule,
+
+    EmailModule,
   ],
   controllers: [],
   providers: [],
