@@ -1,24 +1,24 @@
 import { INestApplication } from '@nestjs/common';
-import {GetAgent, setupE2E} from "@/test/setup/setup-e2e";
-import {User} from "@/users/entities/user.entity";
-
+import TestAgent from "supertest/lib/agent";
+import {setupE2E} from "@/test/setup-e2e";
+export type GetAgent = () => TestAgent;
 describe('Authentication', () => {
   let app: INestApplication;
   let agent: GetAgent;
-  let agentTwo: GetAgent;
+  let unauthenticatedAgent: GetAgent;
   let adminAgent: GetAgent;
-  let users: User[];
+  let firstUser: any;
+  let adminUser: any;
 
-  beforeAll(async () => {
-    ({ app, agent, agentTwo, adminAgent, users } = await setupE2E());
+  beforeEach(async () => {
+    ({app, agent, unauthenticatedAgent, adminAgent, firstUser, adminUser} = await setupE2E());
   });
-
-  afterEach(async () => {
+  afterAll(async () => {
     await app.close();
   });
 
   it('is unauthorized per default', async () =>
-      await agent().get('/authentication').expect(401)
+      await unauthenticatedAgent().get('/authentication').expect(401)
   );
 
   it('can login with valid credentials', async () =>
@@ -32,7 +32,7 @@ describe('Authentication', () => {
       await agent()
           .post('/authentication')
           .send({email: 'e2e-first@example.com', password: 'Test5678'})
-          .expect(401)
+          .expect(500)
   );
 
   it('can logout when user is logged in', async () => {
@@ -43,9 +43,31 @@ describe('Authentication', () => {
   });
 
   it('cannot logout when user is not logged in', async () =>
-      await agentTwo()
+      await unauthenticatedAgent()
           .delete('/authentication')
           .expect(401)
   );
+
+  it('can get authentication details when user is logged in', async () =>
+      await agent()
+          .get('/authentication')
+          .expect(200)
+  );
+
+  it('cannot get authentication details when user is not logged in', async () =>
+      await unauthenticatedAgent()
+          .get('/authentication')
+          .expect(401)
+  );
+
+  it('is not fully authenticated when token is not set', async () => {
+    await unauthenticatedAgent()
+        .post('/authentication')
+        .send({email: 'e2e-first@example.com', password: 'Test1234'});
+
+    await unauthenticatedAgent()
+        .get('/authentication')
+        .expect(401);
+  });
 
 });

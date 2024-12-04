@@ -23,7 +23,6 @@
     "typeorm-seeding": "ts-node --require tsconfig-paths/register ./node_modules/@jorgebodega/typeorm-seeding/dist/cli --dataSource src/ormconfig.ts",
     "db:reset": "npm run db:reset:postgres",
     "db:reset:postgres": "npm run typeorm schema:drop && npm run typeorm schema:sync && npm run typeorm-seeding seed src/seeds/development.seeder.ts"
-
   },
   "dependencies": {
     "@casl/ability": "^6.7.1",
@@ -80,7 +79,7 @@
     "ts-jest": "29.2.5",
     "ts-loader": "9.5.1",
     "ts-node": "10.9.2",
-    "tsconfig-paths": "4.2.0",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "5.6.2"
   },
   "jest": {
