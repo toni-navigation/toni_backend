@@ -10,11 +10,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { render } from '@react-email/render';
 
 import { AuthenticationService } from '@/authentication/authentication.service';
 import { Public } from '@/authentication/decorators/public.decorator';
 import { LoginUserDto } from '@/authentication/dto/login-user.dto';
 import { LocalAuthenticationGuard } from '@/authentication/guards/local-authentication.guard';
+import { EmailConfirmation } from '@/email/EmailConfiguration';
 import { CreateEmailDto } from '@/email/dto/create-email.dto';
 import { EmailService } from '@/email/email.service';
 import { RequestWithUser } from '@/types/RequestWithUser';
@@ -50,12 +52,9 @@ export class AuthenticationController {
   async sendConfirmationEmail(@Body() body: CreateEmailDto) {
     const { email } = body;
 
-    // Call the email service to send a confirmation email
-    await this.emailService.sendEmail(
-      email,
-      'Confirm Your Email',
-      `<p>Thank you for signing up. Click <a href="https://www.toni-navigation.at/confirm?email=${email}">here</a> to confirm your email address.</p>`,
-    );
+    const confirmationUrl = 'https://www.toni-navigation.at';
+    const emailHtml = await render(EmailConfirmation({ confirmationUrl }));
+    await this.emailService.sendEmail(email, 'Confirm Your Email', emailHtml);
 
     return { message: 'Signup successful. Please check your email for confirmation.' };
   }

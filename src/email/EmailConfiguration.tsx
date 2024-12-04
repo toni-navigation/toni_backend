@@ -1,5 +1,5 @@
 import { Button, Heading, Html, Text } from '@react-email/components';
-import React from 'react';
+import * as React from 'react';
 
 interface EmailConfirmationProps {
   confirmationUrl: string;

@@ -2,9 +2,12 @@ import { ConflictException, ForbiddenException, Injectable, NotFoundException } 
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { render } from '@react-email/render';
 import { Repository } from 'typeorm';
 
 import { Action, CaslAbilityFactory } from '@/casl/casl-ability.factory/casl-ability.factory';
+import { EmailConfirmation } from '@/email/EmailConfiguration';
+import { EmailService } from '@/email/email.service';
 import { CreateUserDto } from '@/users/dto/create-user.dto';
 import { UpdateUserDto } from '@/users/dto/update-user.dto';
 import { User } from '@/users/entities/user.entity';
@@ -16,6 +19,7 @@ export class UsersService {
     private jwtService: JwtService,
     private configService: ConfigService,
     private abilityFactory: CaslAbilityFactory,
+    private readonly emailService: EmailService,
   ) {}
 
   async createUser(createUserDto: CreateUserDto) {
@@ -27,17 +31,13 @@ export class UsersService {
       throw new ConflictException('A user with this email already exists.');
     }
     const user = await this.usersRepository.save(this.usersRepository.create(createUserDto));
-    const accessToken = this.jwtService.sign(
-      { id: user.id },
-      {
-        secret: this.configService.get('JWT_SECRET'),
-        expiresIn: this.configService.get('JWT_EXPIRATION_TIME'),
-      },
-    );
+
+    const confirmationUrl = `https://www.toni-navigation.at/`;
+    const emailHtml = await render(EmailConfirmation({ confirmationUrl }));
+    await this.emailService.sendEmail(createUserDto.email.toLowerCase(), 'Confirm Your Email', emailHtml);
 
     return {
       user,
-      accessToken,
     };
   }
 
