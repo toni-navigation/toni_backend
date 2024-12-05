@@ -32,7 +32,7 @@ export class AuthenticationService {
   }
 
   async login(user: User): Promise<CreateUserResponseDto> {
-    const payload = { user: { id: user.id, email: user.email, role: user.role } };
+    const payload = { user: { id: user.id, email: user.email.toLowerCase(), role: user.role } };
 
     return {
       accessToken: this.jwtService.sign(payload),
