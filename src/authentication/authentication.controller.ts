@@ -20,7 +20,6 @@ import { LoginUserDto } from '@/authentication/dto/login-user.dto';
 import { LocalAuthenticationGuard } from '@/authentication/guards/local-authentication.guard';
 import { RequestWithUser } from '@/types/RequestWithUser';
 import { CreateUserResponseDto } from '@/users/dto/create-user-response.dto';
-import { ExceptionDto } from '@/users/dto/exception.dto';
 
 @ApiTags('Authentication')
 @Controller('authentication')
@@ -32,7 +31,6 @@ export class AuthenticationController {
   @UseGuards(LocalAuthenticationGuard)
   @ApiBody({ type: LoginUserDto })
   @ApiResponse({ status: 201, type: CreateUserResponseDto })
-  @ApiResponse({ status: 403, type: ExceptionDto })
   async login(@Request() request: RequestWithUser) {
     const { user: currentUser } = request;
     if (!currentUser) {

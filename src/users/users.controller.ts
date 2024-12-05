@@ -5,7 +5,6 @@ import { Public } from '@/authentication/decorators/public.decorator';
 import { RequestWithUser } from '@/types/RequestWithUser';
 import { CreateUserResponseDto } from '@/users/dto/create-user-response.dto';
 import { CreateUserDto } from '@/users/dto/create-user.dto';
-import { ExceptionDto } from '@/users/dto/exception.dto';
 import { UpdateUserDto } from '@/users/dto/update-user.dto';
 import { UsersService } from '@/users/users.service';
 
@@ -19,13 +18,11 @@ export class UsersController {
   @Public()
   @Post()
   @ApiResponse({ status: 201, type: CreateUserResponseDto })
-  @ApiResponse({ status: 409, type: ExceptionDto })
   async createUser(@Body() createUserDto: CreateUserDto) {
     return this.usersService.createUser(createUserDto);
   }
 
   @Get()
-  @ApiResponse({ status: 403, type: ExceptionDto })
   async findAllUsers(@Req() request: RequestWithUser) {
     const { user: currentUser } = request;
 
@@ -33,8 +30,6 @@ export class UsersController {
   }
 
   @Get(':userId')
-  @ApiResponse({ status: 403, description: 'Forbidden', type: ExceptionDto })
-  @ApiResponse({ status: 404, description: 'Not Found', type: ExceptionDto })
   async findUserById(@Param('userId') userId: string, @Req() request: RequestWithUser) {
     const { user: currentUser } = request;
 
@@ -42,7 +37,6 @@ export class UsersController {
   }
 
   @Patch(':userId')
-  @ApiResponse({ status: 403, description: 'Forbidden', type: ExceptionDto })
   async updateUser(
     @Param('userId') userId: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -55,7 +49,6 @@ export class UsersController {
 
   @Delete(':userId')
   @HttpCode(204)
-  @ApiResponse({ status: 403, description: 'Forbidden', type: ExceptionDto })
   async deleteUser(@Param('userId') userId: string, @Req() request: RequestWithUser) {
     const { user: currentUser } = request;
 

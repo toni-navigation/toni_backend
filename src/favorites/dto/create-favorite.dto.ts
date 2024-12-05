@@ -7,7 +7,7 @@ import { CreatePhotonFeatureDto } from '@/photon-features/dto/create-photon-feat
 export class CreateFavoriteDto {
   @IsNotEmpty()
   @IsString()
-  name: string;
+  title: string;
 
   @IsEnum(DestinationType)
   destinationType: DestinationType;

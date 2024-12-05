@@ -1,4 +1,4 @@
-import { ApiHideProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import * as argon2 from '@node-rs/argon2';
 import { Exclude } from 'class-transformer';
 import { BeforeInsert, BeforeUpdate, Column, Entity, Index, OneToMany } from 'typeorm';
@@ -12,11 +12,11 @@ export enum UserRole {
 }
 @Entity({ name: 'app_user' })
 export class User extends BaseEntity {
-  @Column('text')
-  firstname: string;
+  @Column('text', { nullable: true })
+  firstname: string | null;
 
-  @Column('text')
-  lastname?: string | null;
+  @Column('text', { nullable: true })
+  lastname: string | null;
 
   @Index({ unique: true })
   @Column('text')
@@ -27,6 +27,7 @@ export class User extends BaseEntity {
     enum: UserRole,
     default: UserRole.USER,
   })
+  @ApiProperty({ enum: UserRole, enumName: 'UserRole' })
   role: UserRole;
 
   @ApiHideProperty()

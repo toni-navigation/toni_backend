@@ -39,7 +39,7 @@ export class UsersService {
       },
     );
 
-    const confirmationUrl = `http://localhost:3000/authentication/confirm-email?token=${accessToken}`;
+    const confirmationUrl = `${process.env.CORS_ORIGIN}/api/authentication/confirm-email?token=${accessToken}`;
     const emailHtml = await render(EmailConfirmation({ confirmationUrl }));
     await this.emailService.sendEmail(createUserDto.email.toLowerCase(), 'Confirm Your Email', emailHtml);
 

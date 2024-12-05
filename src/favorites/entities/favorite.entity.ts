@@ -9,8 +9,8 @@ import { User } from '@/users/entities/user.entity';
 
 @Entity()
 export class Favorite extends BaseEntity {
-  @Column('text')
-  name: string;
+  @Column('text', { unique: true })
+  title: string;
 
   @Column({
     type: 'enum',
