@@ -31,8 +31,15 @@ export class UsersService {
       throw new ConflictException('A user with this email already exists.');
     }
     const user = await this.usersRepository.save(this.usersRepository.create(createUserDto));
+    const accessToken = this.jwtService.sign(
+      { id: user.id },
+      {
+        secret: this.configService.get('JWT_SECRET'),
+        expiresIn: this.configService.get('JWT_EXPIRATION_TIME'),
+      },
+    );
 
-    const confirmationUrl = `https://www.toni-navigation.at/`;
+    const confirmationUrl = `http://localhost:3000/authentication/confirm-email?token=${accessToken}`;
     const emailHtml = await render(EmailConfirmation({ confirmationUrl }));
     await this.emailService.sendEmail(createUserDto.email.toLowerCase(), 'Confirm Your Email', emailHtml);
 
