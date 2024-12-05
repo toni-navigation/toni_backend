@@ -50,7 +50,7 @@ export class AuthenticationService {
 
   async login(user: User): Promise<CreateUserResponseDto> {
     const payload = {
-      user: { id: user.id, email: user.email, role: user.role },
+      user: { id: user.id, email: user.email.toLowerCase(), role: user.role },
       secret: this.configService.get('JWT_SECRET'),
       expiresIn: this.configService.get('JWT_EXPIRATION_TIME'),
     };

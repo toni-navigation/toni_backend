@@ -11,5 +11,5 @@
     "^@/(.*)$": "<rootDir>/../src/$1"
   },
 
-  "globalSetup": "./global-setup.ts"
+  "globalSetup": "./setup/global-setup.ts"
 }
