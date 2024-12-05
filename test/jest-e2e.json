@@ -6,9 +6,10 @@
   "transform": {
     "^.+\\.(t|j)s(|x)$": "ts-jest"
   },
-
   "moduleNameMapper": {
     "^@/test/(.*)$": "<rootDir>/../test/$1",
     "^@/(.*)$": "<rootDir>/../src/$1"
-  }
+  },
+
+  "globalSetup": "./global-setup.ts"
 }
