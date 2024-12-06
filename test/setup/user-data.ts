@@ -11,7 +11,7 @@ const passwordAdmin = 'Admin1234';
 
 export const userData = {
     user: { email: 'e2e-user@example.com', password: password1, firstname: 'User', lastname: 'E2E', role: UserRole.USER },
-    deletableUserOne: { email: 'e2e-deletableUserOne@example.com@example.com', password: passwordDelete1, firstname: 'DeleteUserOne', lastname: 'E2E', role: UserRole.USER },
+    deletableUserOne: { email: 'e2e-deletableUserOne@example.com', password: passwordDelete1, firstname: 'DeleteUserOne', lastname: 'E2E', role: UserRole.USER },
     deletableUserTwo: { email: 'e2e-deletableUserTwo@example.com', password: passwordDelete2, firstname: 'DeleteUserTwo', lastname: 'E2E', role: UserRole.USER },
     adminUser: { email: 'e2e-admin@example.com', password: passwordAdmin, firstname: 'Admin', lastname: 'E2E', role: UserRole.ADMIN }
 };
@@ -51,37 +51,37 @@ interface FavoritesData {
 export const favoritesData: FavoritesData = {
     home:
         {
-            name: "Home",
+            title: "Home",
             destinationType: DestinationType.HOME,
             photonFeature: photonFeatureData
         },
     doctor:
         {
-            name: "Doctor",
+            title: "Doctor",
             destinationType: DestinationType.NORMAL,
             photonFeature: photonFeatureData
         },
     shops:
         {
-            name: "Shops",
+            title: "Shops",
             destinationType: DestinationType.NORMAL,
             photonFeature: photonFeatureData
         },
     newFavorite:
         {
-            name: "NewFavorite",
+            title: "NewFavorite",
             destinationType: DestinationType.NORMAL,
             photonFeature: photonFeatureData
         },
     deletableFavoriteOne:
         {
-            name: "DeletableFavoriteOne",
+            title: "DeletableFavoriteOne",
             destinationType: DestinationType.NORMAL,
             photonFeature: photonFeatureData
         },
     deletableFavoriteTwo:
         {
-            name: "DeletableFavoriteTwo",
+            title: "DeletableFavoriteTwo",
             destinationType: DestinationType.NORMAL,
             photonFeature: photonFeatureData
         }

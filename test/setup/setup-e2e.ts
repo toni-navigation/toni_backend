@@ -20,6 +20,7 @@ export async function setupE2E(role: 'user' | 'admin' | 'unauthenticated' | 'del
     }).compile();
 
     const app = moduleFixture.createNestApplication();
+    app.setGlobalPrefix('api');
     await app.init();
 
     const agent = request.agent(app.getHttpServer());
@@ -35,7 +36,7 @@ export async function setupE2E(role: 'user' | 'admin' | 'unauthenticated' | 'del
         } else {
             loginData = { email: userData.user.email, password: userData.user.password };
         }
-        const response = await agent.post('/authentication').send(loginData);
+        const response = await agent.post('/api/authentication').send(loginData);
         currentUser = response.body;
         agent.set('Authorization', `Bearer ${currentUser.accessToken}`);
     }
