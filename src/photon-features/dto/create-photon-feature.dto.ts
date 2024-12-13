@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsObject, ValidateNested } from 'class-validator';
 
@@ -6,6 +7,7 @@ import { PointDto } from '@/photon-features/dto/point.dto';
 
 export class CreatePhotonFeatureDto {
   @IsNotEmpty()
+  @ApiProperty({ oneOf: [{ type: 'string', enum: ['Feature'] }] })
   type: 'Feature';
 
   @IsObject()

@@ -1,8 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Req } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateFavoriteDto } from '@/favorites/dto/create-favorite.dto';
 import { UpdateFavoriteDto } from '@/favorites/dto/update-favorite.dto';
+import { Favorite } from '@/favorites/entities/favorite.entity';
 import { FavoritesService } from '@/favorites/favorites.service';
 import { RequestWithUser } from '@/types/RequestWithUser';
 
@@ -20,6 +21,7 @@ export class FavoritesController {
   }
 
   @Get()
+  @ApiResponse({ status: 200, type: Favorite, isArray: true })
   findAllFavorites(@Req() req: RequestWithUser) {
     const currentUser = req.user;
 
@@ -27,6 +29,7 @@ export class FavoritesController {
   }
 
   @Get(':favoriteId')
+  @ApiResponse({ status: 200, type: Favorite })
   findFavoriteById(@Param('favoriteId') favoriteId: string, @Req() req: RequestWithUser) {
     const currentUser = req.user;
 
@@ -34,6 +37,7 @@ export class FavoritesController {
   }
 
   @Patch(':favoriteId')
+  @ApiResponse({ status: 200, type: Favorite })
   updateFavorite(
     @Param('favoriteId') favoriteId: string,
     @Body() updateFavoriteDto: UpdateFavoriteDto,
