@@ -13,6 +13,8 @@ import { environmentVariablesSchema } from '@/types/EnvironmentVariables';
 import { UsersModule } from '@/users/users.module';
 import { ValidationModule } from '@/validation/validation.module';
 import { EmailModule } from './email/email.module';
+import { BlacklistService } from './blacklist/blacklist.service';
+import { BlacklistModule } from './blacklist/blacklist.module';
 
 @Module({
   imports: [
@@ -45,8 +47,10 @@ import { EmailModule } from './email/email.module';
     PhotonFeaturesModule,
 
     EmailModule,
+
+    BlacklistModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [BlacklistService],
 })
 export class AppModule {}

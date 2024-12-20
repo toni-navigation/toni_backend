@@ -4,9 +4,9 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { render } from '@react-email/render';
 import * as cookie from 'cookie';
-import { Request } from 'express';
 import { EntityNotFoundError, Repository } from 'typeorm';
 
+import { BlacklistService } from '@/blacklist/blacklist.service';
 import { EmailResetPassword } from '@/email/EmailResetPassword';
 import { EmailService } from '@/email/email.service';
 import { EnvironmentVariables } from '@/types/EnvironmentVariables';
@@ -21,6 +21,7 @@ export class AuthenticationService {
     private jwtService: JwtService,
     private usersService: UsersService,
     private emailService: EmailService,
+    private readonly blacklistService: BlacklistService,
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
@@ -84,14 +85,12 @@ export class AuthenticationService {
     }
   }
 
-  setJwtCookieLogout(request: Request) {
-    request.res?.setHeader(
-      'Set-Cookie',
-      this.getSetCookie({
-        value: '',
-        options: { maxAge: 0 },
-      }),
-    );
+  logout(token: string): void {
+    const decoded = this.jwtService.decode(token) as any;
+    const expiration = decoded.exp * 1000 - Date.now(); // Token expiration in milliseconds
+    if (expiration > 0) {
+      this.blacklistService.add(token, expiration);
+    }
   }
 
   private getSetCookie({

@@ -1,11 +1,10 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
-  HttpCode,
   Post,
   Query,
+  Req,
   Request,
   Res,
   UnauthorizedException,
@@ -17,6 +16,7 @@ import { Response } from 'express';
 import { AuthenticationService } from '@/authentication/authentication.service';
 import { Public } from '@/authentication/decorators/public.decorator';
 import { LoginUserDto } from '@/authentication/dto/login-user.dto';
+import { JwtAuthenticationGuard } from '@/authentication/guards/jwt-authentication.guard';
 import { LocalAuthenticationGuard } from '@/authentication/guards/local-authentication.guard';
 import { RequestWithUser } from '@/types/RequestWithUser';
 import { CreateUserResponseDto } from '@/users/dto/create-user-response.dto';
@@ -70,11 +70,22 @@ export class AuthenticationController {
     return request.user;
   }
 
-  @Delete()
-  @HttpCode(204)
+  @Post('logout')
+  @UseGuards(JwtAuthenticationGuard)
   @ApiBearerAuth('access-token')
-  async logout(@Request() request: RequestWithUser) {
-    this.authenticationService.setJwtCookieLogout(request);
+  async logout(@Req() req: any) {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+      throw new UnauthorizedException('Authorization header is missing Controller');
+    }
+    console.log(req.headers);
+    // const token = req.headers.authorization?.split(' ')[1];
+    // if (token) {
+    //   this.authenticationService.logout(token);
+    // }
+    //
+    // return 'Logged out successfully.';
   }
 
   @Public()
