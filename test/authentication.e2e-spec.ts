@@ -1,7 +1,9 @@
 import { INestApplication } from '@nestjs/common';
 import TestAgent from "supertest/lib/agent";
 import {setupE2E} from "@/test/setup/setup-e2e";
-import {userData} from "@/test/setup/user-data";
+import axios from 'axios';
+
+
 export type GetAgent = () => TestAgent;
 
 describe('Authentication', () => {
@@ -24,6 +26,14 @@ describe('Authentication', () => {
 
     it('is unauthorized per default', async () => {
       await agent().get('/api/authentication').expect(401);
+    });
+
+    it('should not be able to do fully logged in actions (e.g. get user) if token is not set', async () => {
+      const response = await agent()
+          .post('/api/authentication')
+          .send({ email: 'e2e-user@example.com', password: 'Test1234' })
+      const currentUserId = response.body.id;
+      await agent().get(`/api/users/${currentUserId}`).expect(401);
     });
 
     it('cannot logout when user is not logged in', async () => {
@@ -69,6 +79,16 @@ describe('Authentication', () => {
     it('can get authentication details when user is logged in', async () =>
         await agent().get('/api/authentication').expect(200)
     );
+
+    it('sends an email for forgot password', async () => {
+      await agent()
+          .post('/api/authentication/forgot-password')
+          .send({email: 'e2e-user@example.com', password: '1234'})
+          .expect(201)
+
+      const emails = await axios.get('http://localhost:8025/api/v1/messages');
+      console.log(emails);
+    });
   });
 
 });

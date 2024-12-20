@@ -40,6 +40,7 @@
     "@react-email/components": "^0.0.28",
     "@react-email/render": "^1.0.2",
     "@types/geojson": "^7946.0.14",
+    "axios": "^1.7.9",
     "class-transformer": "0.5.1",
     "class-validator": "0.14.1",
     "cookie": "0.6.0",

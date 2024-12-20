@@ -53,36 +53,42 @@ export const favoritesData: FavoritesData = {
         {
             title: "Home",
             destinationType: DestinationType.HOME,
+            isPinned: true,
             photonFeature: photonFeatureData
         },
     doctor:
         {
             title: "Doctor",
             destinationType: DestinationType.NORMAL,
+            isPinned: true,
             photonFeature: photonFeatureData
         },
     shops:
         {
             title: "Shops",
             destinationType: DestinationType.NORMAL,
+            isPinned: true,
             photonFeature: photonFeatureData
         },
     newFavorite:
         {
             title: "NewFavorite",
             destinationType: DestinationType.NORMAL,
+            isPinned: false,
             photonFeature: photonFeatureData
         },
     deletableFavoriteOne:
         {
             title: "DeletableFavoriteOne",
             destinationType: DestinationType.NORMAL,
+            isPinned: false,
             photonFeature: photonFeatureData
         },
     deletableFavoriteTwo:
         {
             title: "DeletableFavoriteTwo",
             destinationType: DestinationType.NORMAL,
+            isPinned: false,
             photonFeature: photonFeatureData
         }
 }

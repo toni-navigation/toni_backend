@@ -62,7 +62,7 @@ describe('Favorites', () => {
         it('should create a new favorite', async () => {
             await agent()
                 .post('/api/favorites')
-                .send({title: favoritesData.newFavorite.title, destinationType: favoritesData.newFavorite.destinationType, photonFeature: favoritesData.newFavorite.photonFeature}).expect(201);
+                .send({title: favoritesData.newFavorite.title, destinationType: favoritesData.newFavorite.destinationType, isPinned: favoritesData.newFavorite.isPinned, photonFeature: favoritesData.newFavorite.photonFeature}).expect(201);
         });
 
         it('should update a favorite', async () => {

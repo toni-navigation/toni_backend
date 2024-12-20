@@ -97,7 +97,7 @@ describe('Users', () => {
         it('should create a new user', async () => {
             await agent()
                 .post('/api/users')
-                .send({ email: 'newUser@example.com', password: 'newUser1234', confirmPassword: 'newUser1234' },)
+                .send({ email: 'newUser@example.com', password: 'newUser1234', confirmPassword: 'newUser1234' })
                 .expect(201);
         });
 
@@ -105,14 +105,14 @@ describe('Users', () => {
 
             await agent()
                 .post('/api/users')
-                .send({ email: 'newUser2@example.com', password: 'new', confirmPassword: 'new' },)
+                .send({ email: 'newUser2@example.com', password: 'new', confirmPassword: 'new' })
                 .expect(400);
         });
 
         it('should fail to create a new user, because email is not in a valid form', async () => {
             await agent()
                 .post('/api/users')
-                .send({ email: 'newUser3@example', password: 'newUser1234', confirmPassword: 'newUser1234' },)
+                .send({ email: 'newUser3@example', password: 'newUser1234', confirmPassword: 'newUser1234' })
                 .expect(400);
         });
 
@@ -137,7 +137,7 @@ describe('Users', () => {
         it('should be able to update another user as an admin user (lastname)', async () => {
             await agent()
                 .patch(`/api/users/${userId}`)
-                .send({ email: 'e2e-user@example.com', password: 'Test5678', firstname: 'updatedName', lastname: 'E2E Update' },)
+                .send({ email: 'e2e-user@example.com', password: 'Test1234', firstname: 'updatedName', lastname: 'E2E Update' },)
                 .expect(200);
         });
 
