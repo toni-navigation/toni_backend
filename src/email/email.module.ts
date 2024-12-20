@@ -8,7 +8,8 @@ import { EmailService } from '@/email/email.service';
     MailerModule.forRoot({
       transport: {
         host: process.env.SMTP_HOST,
-        port: process.env.SMTP_PORT,
+        // TODO: port: process.env.SMTP_PORT, does not work somehow
+        port: 1025,
         secure: process.env.SMTP_SECURE, // Use TLS for Gmail
         auth: {
           user: process.env.SMTP_USER,
