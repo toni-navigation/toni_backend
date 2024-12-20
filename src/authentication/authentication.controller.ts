@@ -79,6 +79,19 @@ export class AuthenticationController {
 
   @Public()
   @Post('forgot-password')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        email: {
+          type: 'string',
+          example: 'user@example.com',
+          description: 'The email address of the user who wants to reset their password.',
+        },
+      },
+      required: ['email'],
+    },
+  })
   async forgotPassword(@Body() { email }: { email: string }): Promise<void> {
     return this.authenticationService.forgotPassword(email);
   }

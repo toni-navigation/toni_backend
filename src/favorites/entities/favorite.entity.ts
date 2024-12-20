@@ -21,8 +21,10 @@ export class Favorite extends BaseEntity {
 
   @OneToOne(() => PhotonFeature, (photonFeature) => photonFeature.favorite, { cascade: ['insert', 'update'] })
   @ApiProperty({ type: CreatePhotonFeatureDto })
-  // @Transform((params) => convertEntityToPhotonFeatureDto(params.value))
   photonFeature: PhotonFeature;
+
+  @Column({ default: false })
+  isPinned: boolean;
 
   @Column({ name: 'user_id' })
   userId: string;

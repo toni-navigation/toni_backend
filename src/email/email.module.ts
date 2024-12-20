@@ -7,16 +7,17 @@ import { EmailService } from '@/email/email.service';
   imports: [
     MailerModule.forRoot({
       transport: {
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false, // Use TLS
+        host: process.env.SMTP_HOST,
+        // TODO: port: process.env.SMTP_PORT, does not work somehow
+        port: 1025,
+        secure: process.env.SMTP_SECURE, // Use TLS for Gmail
         auth: {
-          user: 'toni.navigation@gmail.com',
-          pass: 'wmpl cqhh jaud uymb', // Use an App Password, not your Gmail password
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
         },
       },
       defaults: {
-        from: '"Toni" <toni.navigation@gmail.com>',
+        from: process.env.SMTP_FROM,
       },
     }),
   ],
