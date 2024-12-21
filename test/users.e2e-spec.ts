@@ -3,6 +3,13 @@ import TestAgent from "supertest/lib/agent";
 import {setupE2E} from "@/test/setup/setup-e2e";
 import {userData} from "@/test/setup/user-data";
 import {getUserIds} from "@/test/setup/setup-e2e";
+import axios from "axios";
+import {User} from "@/users/entities/user.entity";
+
+import {Repository} from "typeorm";
+import {getRepositoryToken} from "@nestjs/typeorm";
+import {Test, TestingModule} from "@nestjs/testing";
+import {AppModule} from "@/app.module";
 export type GetAgent = () => TestAgent;
 
 describe('Users', () => {
@@ -99,7 +106,20 @@ describe('Users', () => {
                 .post('/api/users')
                 .send({ email: 'newUser@example.com', password: 'newUser1234', confirmPassword: 'newUser1234' })
                 .expect(201);
+
+            const emails = await axios.get('http://localhost:8025/api/v1/messages');
+            const subject = emails.data.messages.find((email: { Subject: string }) => email.Subject === 'Confirm Your Email')?.Subject;
+
+            expect(subject).toBeTruthy();
         });
+
+        //schlägt fehl
+        // it('should not be able to create a new user with an already existing email address', async () => {
+        //     await agent()
+        //         .post('/api/users')
+        //         .send({ email: 'e2e-user@example', password: 'Test1234', confirmPassword: 'Test1234' })
+        //         .expect(409);
+        // });
 
         it('should fail to create a new user, because password is too short', async () => {
 

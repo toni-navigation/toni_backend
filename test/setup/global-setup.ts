@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {In, Repository} from 'typeorm';
 import 'tsconfig-paths/register';
 import { AppModule } from '@/app.module';
 import { User } from '@/users/entities/user.entity';
@@ -16,8 +16,17 @@ async function globalSetup() {
     const userRepository = moduleFixture.get<Repository<User>>(getRepositoryToken(User));
     const favoriteRepository = moduleFixture.get<Repository<Favorite>>(getRepositoryToken(Favorite));
 
-    await favoriteRepository.delete({});
     await userRepository.delete({});
+    await favoriteRepository.delete({});
+
+    // Macht Probleme mit dem Löschen vom NewUser aus users.e2e-spec.ts
+    // // Delete specific users
+    // const userEmails = Object.values(userData).map(user => user.email.toLowerCase());
+    // await userRepository.delete({ email: In(userEmails) });
+    //
+    // // Delete specific favorites
+    // const favoriteTitles = Object.values(favoritesData).map(favorite => favorite.title);
+    // await favoriteRepository.delete({ title: In(favoriteTitles) });
 
     const users = await userRepository.save(
         Object.values(userData).map(user => userRepository.create(user))

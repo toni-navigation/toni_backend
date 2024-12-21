@@ -9,6 +9,7 @@ import {getRepositoryToken} from "@nestjs/typeorm";
 import {userData} from "@/test/setup/user-data";
 export type GetAgent = () => TestAgent;
 import { Favorite } from '@/favorites/entities/favorite.entity';
+import axios from "axios";
 
 
 export async function setupE2E(role: 'user' | 'admin' | 'unauthenticated' | 'deletable' = 'user'): Promise<{
@@ -22,6 +23,7 @@ export async function setupE2E(role: 'user' | 'admin' | 'unauthenticated' | 'del
     const app = moduleFixture.createNestApplication();
     app.setGlobalPrefix('api');
     await app.init();
+    await axios.delete('http://localhost:8025/api/v1/messages');
 
     const agent = request.agent(app.getHttpServer());
 

@@ -87,7 +87,9 @@ describe('Authentication', () => {
           .expect(201)
 
       const emails = await axios.get('http://localhost:8025/api/v1/messages');
-      console.log(emails);
+      const subject = emails.data.messages.find((email: { Subject: string }) => email.Subject === 'Reset password')?.Subject;
+
+      expect(subject).toBeTruthy();
     });
   });
 

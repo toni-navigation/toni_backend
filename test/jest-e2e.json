@@ -1,9 +1,7 @@
 {
-  "preset": "ts-jest/presets/default-esm",
   "moduleFileExtensions": ["js", "json", "ts", "tsx"],
   "rootDir": ".",
   "testEnvironment": "node",
-  "extensionsToTreatAsEsm": [".ts"],
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s(|x)$": "ts-jest"
