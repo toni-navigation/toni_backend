@@ -113,7 +113,7 @@ describe('Users', () => {
             expect(subject).toBeTruthy();
         });
 
-        //schlägt fehl
+        // schlägt fehl mit Fehlercode 400 Bad Request, sollte aber 409 ConflictException sein
         // it('should not be able to create a new user with an already existing email address', async () => {
         //     await agent()
         //         .post('/api/users')

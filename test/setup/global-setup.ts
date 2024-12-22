@@ -23,10 +23,11 @@ async function globalSetup() {
     // // Delete specific users
     // const userEmails = Object.values(userData).map(user => user.email.toLowerCase());
     // await userRepository.delete({ email: In(userEmails) });
-    //
     // // Delete specific favorites
     // const favoriteTitles = Object.values(favoritesData).map(favorite => favorite.title);
     // await favoriteRepository.delete({ title: In(favoriteTitles) });
+    // // Delete new User einzeln, weil nicht in User Data enthalten
+    // await userRepository.delete({email: 'newUser@example.com'});
 
     const users = await userRepository.save(
         Object.values(userData).map(user => userRepository.create(user))
