@@ -6,6 +6,7 @@ export const environmentVariablesSchema = z.object({
   DB_USERNAME: z.string(),
   DB_PASSWORD: z.string(),
   DB_DATABASE: z.string(),
+  DATABASE_URL: z.string().optional(),
 
   TYPEORM_ENTITIES: z.string(),
   TYPEORM_MIGRATIONS: z.string(),
@@ -25,6 +26,8 @@ export const environmentVariablesSchema = z.object({
   SMTP_USER: z.string(),
   SMTP_PASS: z.string(),
   SMTP_FROM: z.string(),
+
+  NODE_ENV: z.enum(['development', 'production', 'test']),
 });
 
 export type EnvironmentVariables = z.infer<typeof environmentVariablesSchema>;

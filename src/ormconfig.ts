@@ -11,11 +11,9 @@ const configService = new ConfigService<EnvironmentVariables, true>();
 
 export const postgresConnectionOptions: PostgresConnectionOptions = {
   type: 'postgres',
-  host: configService.get('DB_HOST', { infer: true }),
-  port: configService.get('DB_PORT', { infer: true }),
-  username: configService.get('DB_USERNAME', { infer: true }),
-  password: configService.get('DB_PASSWORD', { infer: true }),
-  database: configService.get('DB_DATABASE', { infer: true }),
+  url:
+    configService.get('DATABASE_URL', { infer: true }) ||
+    `postgres://${configService.get('DB_USERNAME', { infer: true })}:${configService.get('DB_PASSWORD', { infer: true })}@${configService.get('DB_HOST', { infer: true })}:${configService.get('DB_PORT', { infer: true })}/${configService.get('DB_DATABASE', { infer: true })}`,
   entities: [configService.get('TYPEORM_ENTITIES', { infer: true })],
   migrations: [configService.get('TYPEORM_MIGRATIONS', { infer: true })],
   migrationsRun: configService.get('TYPEORM_MIGRATIONS_RUN', { infer: true }),
