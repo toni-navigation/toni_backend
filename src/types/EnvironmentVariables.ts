@@ -1,11 +1,11 @@
 import { z } from 'zod';
 
 export const environmentVariablesSchema = z.object({
-  DB_HOST: z.string(),
-  DB_PORT: z.string().regex(/^\d+$/).transform(Number),
-  DB_USERNAME: z.string(),
-  DB_PASSWORD: z.string(),
-  DB_DATABASE: z.string(),
+  DB_HOST: z.string().optional(),
+  DB_PORT: z.string().regex(/^\d+$/).transform(Number).optional(),
+  DB_USERNAME: z.string().optional(),
+  DB_PASSWORD: z.string().optional(),
+  DB_DATABASE: z.string().optional(),
   DATABASE_URL: z.string().optional(),
 
   TYPEORM_ENTITIES: z.string(),
