@@ -13,6 +13,8 @@
     "seed:run": "ts-node -r tsconfig-paths/register src/seeds/development.seeder.ts",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
+    "typeorm": "typeorm",
+    "migration:run": "npm run typeorm migration:run",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
