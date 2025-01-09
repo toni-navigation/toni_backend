@@ -9,10 +9,9 @@ import { EmailService } from '@/email/email.service';
       transport: {
         host: process.env.SMTP_HOST,
         // TODO: port: process.env.SMTP_PORT, does not work somehow
-        port: 1025,
+        port: process.env.SMTP_PORT || 1025,
         // TODO: port: process.env.SMTP_SECURE, does not work somehow
-        //secure: process.env.SMTP_SECURE, // Use TLS for Gmail
-        secure: false,
+        secure: process.env.SMTP_SECURE || false,
         auth: {
           user: process.env.SMTP_USER,
           pass: process.env.SMTP_PASS,
