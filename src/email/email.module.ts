@@ -9,7 +9,7 @@ import { EmailService } from '@/email/email.service';
       transport: {
         host: process.env.SMTP_HOST,
         // TODO: port: process.env.SMTP_PORT, does not work somehow
-        port: process.env.SMTP_PORT || 1025,
+        port: process.env.SMTP_PORT || 587,
         // TODO: port: process.env.SMTP_SECURE, does not work somehow
         secure: process.env.SMTP_SECURE || false,
         auth: {
