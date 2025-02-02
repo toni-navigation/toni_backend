@@ -18,7 +18,13 @@ export const postgresConnectionOptions: PostgresConnectionOptions = {
   migrations: [configService.get('TYPEORM_MIGRATIONS', { infer: true })],
   migrationsRun: configService.get('TYPEORM_MIGRATIONS_RUN', { infer: true }),
   synchronize: configService.get('TYPEORM_SYNCHRONIZE', { infer: true }),
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  ssl: process.env.NODE_ENV === 'production', // Enable SSL
+  extra: process.env.NODE_ENV === 'production' ? {
+    ssl: {
+      rejectUnauthorized: false, // Allow self-signed certificates
+    },
+  } : {},
 };
+
 
 export const postgresDataSource = new DataSource(postgresConnectionOptions);
