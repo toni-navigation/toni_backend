@@ -1,13 +1,18 @@
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
+
 import { EmailService } from '@/email/email.service';
+import { EnvironmentVariables } from '@/types/EnvironmentVariables';
+
+const configService = new ConfigService<EnvironmentVariables, true>();
 
 @Module({
   imports: [
     MailerModule.forRoot({
       transport: {
-        host: process.env.SMTP_HOST || 'smtp.gmail.com', // Gmail SMTP-Host
-        port: process.env.SMTP_PORT || 587, // Port 587 für TLS
+        host: configService.get('SMTP_HOST', { infer: true }) || "localhost", // Gmail SMTP-Host
+        port: configService.get('SMTP_PORT', { infer: true }) || 1025, // Port 587 für TLS
         secure: process.env.SMTP_SECURE === 'true' || false, // sicherer Modus (SSL/TLS)
         auth: {
           user: process.env.SMTP_USER,
