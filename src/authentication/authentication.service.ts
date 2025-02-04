@@ -80,7 +80,7 @@ export class AuthenticationService {
 
       const newAccessToken = this.jwtService.sign(newPayload);
 
-      return `toni://profile/calibration?token=${newAccessToken}`;
+      return `toni://login?token=${newAccessToken}`;
     }
   }
 

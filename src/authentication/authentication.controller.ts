@@ -40,19 +40,6 @@ export class AuthenticationController {
     return this.authenticationService.login(request.user);
   }
 
-  // @Public()
-  // @ApiBody({ type: CreateEmailDto })
-  // @Post('sendConfirmationEmail')
-  // async sendConfirmationEmail(@Body() body: CreateEmailDto) {
-  //   const { email } = body;
-  //
-  //   const confirmationUrl = 'https://www.toni-navigation.at';
-  //   const emailHtml = await render(EmailConfirmation({ confirmationUrl }));
-  //   await this.emailService.sendEmail(email, 'Confirm Your Email', emailHtml);
-  //
-  //   return { message: 'Signup successful. Please check your email for confirmation.' };
-  // }
-
   @Public()
   @Get('confirm-email')
   async confirmEmail(@Query('token') token: string, @Res() res: Response) {
