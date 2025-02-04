@@ -60,8 +60,7 @@ export class AuthenticationController {
 
     console.log('redirectUrl', redirectUrl);
 
-    // return res.redirect(redirectUrl);
-    return res.redirect('https://www.google.at');
+    return res.redirect(redirectUrl);
   }
 
   @Get()
