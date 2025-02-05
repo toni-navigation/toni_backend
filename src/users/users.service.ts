@@ -30,20 +30,16 @@ export class UsersService {
     if (existingUser) {
       throw new ConflictException('Die Email ist bereits vergeben.');
     }
-    const user = await this.usersRepository.save(this.usersRepository.create(createUserDto));
-    const accessToken = this.jwtService.sign(
-      { id: user.id },
-      {
-        secret: this.configService.get('JWT_SECRET'),
-        expiresIn: this.configService.get('JWT_EXPIRATION_TIME'),
-      },
-    );
+    const user: User = await this.usersRepository.save(this.usersRepository.create(createUserDto));
+    const payload = { user: { id: user.id, email: user.email.toLowerCase(), role: user.role }} ;
 
-    const confirmationUrl = `${process.env.CORS_ORIGIN}/api/authentication/confirm-email?token=${accessToken}`;
-    const emailHtml = await render(EmailConfirmation({ confirmationUrl }));
-    await this.emailService.sendEmail(createUserDto.email.toLowerCase(), 'Confirm Your Email', emailHtml);
+    const secret = this.configService.get<string>('JWT_SECRET');
+    if (!secret) {
+      throw new Error('JWT_SECRET is not defined');
+    }
 
     return {
+      accessToken: this.jwtService.sign(payload, { secret }),
       user,
     };
   }
