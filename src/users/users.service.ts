@@ -28,7 +28,7 @@ export class UsersService {
     });
 
     if (existingUser) {
-      throw new ConflictException('A user with this email already exists.');
+      throw new ConflictException('Die Email ist bereits vergeben.');
     }
     const user = await this.usersRepository.save(this.usersRepository.create(createUserDto));
     const accessToken = this.jwtService.sign(
