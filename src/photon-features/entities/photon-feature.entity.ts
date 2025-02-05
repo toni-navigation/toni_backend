@@ -1,20 +1,17 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { Column, Entity, Index, JoinColumn, OneToOne, PrimaryColumn, RelationId } from 'typeorm';
 
-import { TimestampEntity } from '@/base-entities/timestamp-entity.entity';
 import { Favorite } from '@/favorites/entities/favorite.entity';
 import { PointDto } from '@/photon-features/dto/point.dto';
 
 @Entity()
-export class PhotonFeature extends TimestampEntity {
+export class PhotonFeature {
   @RelationId((photonFeature: PhotonFeature) => photonFeature.favorite)
   @PrimaryColumn('uuid')
   favoriteId: string;
 
   @OneToOne(() => Favorite, (favorite) => favorite.photonFeature, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn()
-  @ApiProperty({ description: 'Favorit' })
   @Transform((params) => {
     console.log('Transform in photon-feature.entity.ts', params);
   })
