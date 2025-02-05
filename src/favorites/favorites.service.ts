@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
@@ -51,13 +51,18 @@ export class FavoritesService {
       where: { userId: currentUser.id },
       relations: ['photonFeature'],
     });
-
-    return result
+    const homeFavorite = result
       .map((favorite) => ({
         ...favorite,
         photonFeature: convertEntityToPhotonFeatureDto(favorite.photonFeature),
       }))
       .find((favorite) => favorite.destinationType === DestinationType.HOME);
+
+    if (!homeFavorite) {
+      throw new NotFoundException('Keine Addresse gefunden.');
+    }
+
+    return homeFavorite;
   }
 
   async findAllFavorites(currentUser: User) {
