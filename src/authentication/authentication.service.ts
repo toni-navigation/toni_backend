@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,6 +7,7 @@ import * as cookie from 'cookie';
 import { Request } from 'express';
 import { EntityNotFoundError, Repository } from 'typeorm';
 
+import { Action, CaslAbilityFactory } from '@/casl/casl-ability.factory/casl-ability.factory';
 import { EmailResetPassword } from '@/email/EmailResetPassword';
 import { EmailService } from '@/email/email.service';
 import { EnvironmentVariables } from '@/types/EnvironmentVariables';
@@ -21,6 +22,8 @@ export class AuthenticationService {
     private jwtService: JwtService,
     private usersService: UsersService,
     private emailService: EmailService,
+    private abilityFactory: CaslAbilityFactory,
+
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
@@ -33,6 +36,21 @@ export class AuthenticationService {
       }
       throw error;
     }
+  }
+
+  async getAuthenticatedUser(userId: string, currentUser: User): Promise<User> {
+    const user = await this.usersRepository.findOneByOrFail({ id: userId });
+    const ability = this.abilityFactory.defineAbility(currentUser);
+
+    if (ability.cannot(Action.Read, user)) {
+      throw new ForbiddenException('You are not allowed to retrieve this user.');
+    }
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
   }
 
   async forgotPassword(email: string): Promise<void> {

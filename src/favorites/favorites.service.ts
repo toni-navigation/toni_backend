@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
@@ -6,6 +6,7 @@ import { Action, CaslAbilityFactory } from '@/casl/casl-ability.factory/casl-abi
 import { CreateFavoriteDto } from '@/favorites/dto/create-favorite.dto';
 import { UpdateFavoriteDto } from '@/favorites/dto/update-favorite.dto';
 import { Favorite } from '@/favorites/entities/favorite.entity';
+import { DestinationType } from '@/favorites/enums/favorite-type.enum';
 import { convertEntityToPhotonFeatureDto } from '@/functions/convertEntityToPhotonFeatureDto';
 import { convertPhotonFeatureDtoToEntity } from '@/functions/convertPhotonFeatureDtoToEntity';
 import { PhotonFeature } from '@/photon-features/entities/photon-feature.entity';
@@ -37,6 +38,31 @@ export class FavoritesService {
     });
 
     return this.favoritesRepository.save(favorite);
+  }
+
+  async findHomeAddress(currentUser: User) {
+    const ability = this.abilityFactory.defineAbility(currentUser);
+
+    if (ability.cannot(Action.Read, Favorite)) {
+      throw new ForbiddenException('You are not allowed to read favorites.');
+    }
+
+    const result = await this.favoritesRepository.find({
+      where: { userId: currentUser.id },
+      relations: ['photonFeature'],
+    });
+    const homeFavorite = result
+      .map((favorite) => ({
+        ...favorite,
+        photonFeature: convertEntityToPhotonFeatureDto(favorite.photonFeature),
+      }))
+      .find((favorite) => favorite.destinationType === DestinationType.HOME);
+
+    if (!homeFavorite) {
+      throw new NotFoundException('Keine Addresse gefunden.');
+    }
+
+    return homeFavorite;
   }
 
   async findAllFavorites(currentUser: User) {
