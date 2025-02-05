@@ -4,14 +4,14 @@ import { IsMatchingPassword } from '@/users/decorators/is-password-matching.deco
 
 export class CreateUserDto {
   @IsNotEmpty()
-  @IsEmail()
+  @IsEmail({}, { message: 'Kein gültiges E-Mail-Format'})
   email: string;
 
   @IsString()
-  @MinLength(8, { message: 'Password must be at least 8 characters long' })
+  @MinLength(8, { message: 'Passwort muss mindestens 8 Zeichen haben' })
   password: string;
 
   @IsString()
-  @IsMatchingPassword('password', { message: 'Passwords do not match' })
+  @IsMatchingPassword('password', { message: 'Passwörter müssen übereinstimmen' })
   confirmPassword: string;
 }
