@@ -67,7 +67,9 @@ export class AuthenticationController {
   @Get()
   @ApiBearerAuth('access-token')
   getUser(@Request() request: RequestWithUser) {
-    return request.user;
+    return this.authenticationService.getAuthenticatedUser(request.user.id, request.user);
+
+    // return request.user;
   }
 
   @Delete()

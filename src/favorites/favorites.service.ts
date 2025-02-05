@@ -6,6 +6,7 @@ import { Action, CaslAbilityFactory } from '@/casl/casl-ability.factory/casl-abi
 import { CreateFavoriteDto } from '@/favorites/dto/create-favorite.dto';
 import { UpdateFavoriteDto } from '@/favorites/dto/update-favorite.dto';
 import { Favorite } from '@/favorites/entities/favorite.entity';
+import { DestinationType } from '@/favorites/enums/favorite-type.enum';
 import { convertEntityToPhotonFeatureDto } from '@/functions/convertEntityToPhotonFeatureDto';
 import { convertPhotonFeatureDtoToEntity } from '@/functions/convertPhotonFeatureDtoToEntity';
 import { PhotonFeature } from '@/photon-features/entities/photon-feature.entity';
@@ -37,6 +38,26 @@ export class FavoritesService {
     });
 
     return this.favoritesRepository.save(favorite);
+  }
+
+  async findHomeAddress(currentUser: User) {
+    const ability = this.abilityFactory.defineAbility(currentUser);
+
+    if (ability.cannot(Action.Read, Favorite)) {
+      throw new ForbiddenException('You are not allowed to read favorites.');
+    }
+
+    const result = await this.favoritesRepository.find({
+      where: { userId: currentUser.id },
+      relations: ['photonFeature'],
+    });
+
+    return result
+      .map((favorite) => ({
+        ...favorite,
+        photonFeature: convertEntityToPhotonFeatureDto(favorite.photonFeature),
+      }))
+      .find((favorite) => favorite.destinationType === DestinationType.HOME);
   }
 
   async findAllFavorites(currentUser: User) {

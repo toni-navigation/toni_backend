@@ -14,5 +14,5 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
 
   @IsOptional()
   @IsNumber()
-  calibrationFactor: number | null;
+  calibrationFactor?: number | null;
 }

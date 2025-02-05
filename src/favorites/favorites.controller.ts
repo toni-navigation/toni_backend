@@ -28,6 +28,14 @@ export class FavoritesController {
     return this.favoritesService.findAllFavorites(currentUser);
   }
 
+  @Get('home')
+  @ApiResponse({ status: 200, type: Favorite })
+  findHomeAddress(@Req() req: RequestWithUser) {
+    const currentUser = req.user;
+
+    return this.favoritesService.findHomeAddress(currentUser);
+  }
+
   @Get(':favoriteId')
   @ApiResponse({ status: 200, type: Favorite })
   findFavoriteById(@Param('favoriteId') favoriteId: string, @Req() req: RequestWithUser) {
