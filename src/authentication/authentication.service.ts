@@ -98,7 +98,7 @@ export class AuthenticationService {
 
       const newAccessToken = this.jwtService.sign(newPayload);
 
-      return `toni://intro?token=${newAccessToken}`;
+      return `toni://login?token=${newAccessToken}`;
     }
   }
 

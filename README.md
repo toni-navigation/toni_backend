@@ -84,3 +84,13 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+## Deployment
+
+Beim Pushen auf den Main branch wird automatisch ein deploy ausgeführt.
+
+## Zugriff auf Produktivdatenbank in Heroku
+
+```bash
+$ heroku pg:psql postgresql-infinite-08834 --app toni-navigation 
+```
